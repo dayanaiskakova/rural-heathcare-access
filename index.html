@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rural Care Kazakhstan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one long reading column with a sticky section index; evidence (tables, figures) sits in white panels so the original charts keep their colours in both themes. */
+:root{
+  --paper:#eef9f6; --panel:#ffffff; --ink:#10303a; --muted:#4a6870; --line:#c6e2dc;
+  --rural:#d9531e; --urban:#2a6fcf; --accent:#087a76; --sun:#f5b324; --warn:#8a5a00; --warnbg:#fff4d6;
+  --serif:'Source Serif 4',Georgia,serif; --sans:'Source Sans 3',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0b1c20; --panel:#ffffff; --ink:#e4f2ef; --muted:#9bbdb8; --line:#23424a;
+  --rural:#ff8a5c; --urban:#6fa8f2; --accent:#5cd0c4; --warn:#f2c35c; --warnbg:#2b2410; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --paper:#0b1c20; --panel:#ffffff; --ink:#e4f2ef; --muted:#9bbdb8; --line:#23424a;
+  --rural:#ff8a5c; --urban:#6fa8f2; --accent:#5cd0c4; --warn:#f2c35c; --warnbg:#2b2410; color-scheme:dark;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.65 var(--sans)}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--rural);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header.hero{position:relative;overflow:hidden;padding:56px 0 64px;color:#fff;background:linear-gradient(135deg,#0a6a73 0%,#17977c 60%,#6fbf73 100%)}
+header.hero .wrap{position:relative;z-index:1}
+.ecg{position:absolute;left:0;right:0;bottom:0;width:100%;height:46px;opacity:.55}
+.cross{position:absolute;right:4%;top:28px;width:150px;height:150px;opacity:.16}
+.eyebrow{font:600 13px/1.3 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#d8fff1;margin:0 0 14px}
+h1{font:700 clamp(34px,6vw,60px)/1.05 var(--serif);margin:0 0 18px;text-wrap:balance;max-width:18ch}
+.lede{font:500 clamp(19px,2.4vw,24px)/1.4 var(--serif);max-width:44ch;margin:0 0 28px;text-wrap:pretty}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:0}
+.stat{background:#fff;color:#14202e;border:0;border-top:6px solid var(--sun);border-radius:10px;padding:14px 18px 16px;box-shadow:0 6px 18px rgba(0,40,40,.18)}
+.stat.r{border-top-color:#d9531e}.stat.u{border-top-color:#2a6fcf}
+.stat b{display:block;font:700 34px/1.1 var(--serif);font-variant-numeric:tabular-nums}
+.stat span{font-size:14px;color:#566475;display:block;margin-top:6px}
+.stat.r b{color:#c24512}.stat.u b{color:#2a6fcf}
+nav.idx{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:3px solid var(--sun)}
+nav.idx ul{display:flex;gap:4px;list-style:none;margin:0;padding:8px 0;overflow-x:auto;white-space:nowrap}
+nav.idx a{display:block;padding:6px 12px;border-radius:999px;text-decoration:none;color:var(--ink);font:600 14px/1 var(--sans)}
+nav.idx a:hover{background:var(--sun);color:#14202e}
+main{padding:12px 0 60px}
+section{padding:34px 0 16px;margin-top:34px;border-top:6px solid var(--sc,#087a76)}
+.sn{display:inline-block;font:700 13px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--sc,#087a76);padding:7px 12px;border-radius:999px;margin:0 0 14px}
+h2{font:700 clamp(28px,4vw,40px)/1.12 var(--serif);margin:0 0 16px;text-wrap:balance}
+h3{font:700 22px/1.25 var(--serif);margin:34px 0 10px;text-wrap:balance;padding-bottom:6px;border-bottom:3px solid var(--sc,#087a76);display:inline-block}
+h4{font:700 17px/1.3 var(--sans);margin:22px 0 6px}
+.col{max-width:68ch}
+p{margin:0 0 14px}
+.claim{font:500 21px/1.45 var(--serif);border-left:6px solid var(--sc);padding:2px 0 2px 16px;margin:0 0 22px;max-width:60ch}
+.q{background:#fff;color:#14202e;border:3px solid var(--sc);border-radius:10px;padding:18px 20px;margin:20px 0;max-width:72ch}
+.q b.tag{display:block;font:700 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#14202e;margin-bottom:8px}
+.q p{margin:0;font:500 19px/1.45 var(--serif)}
+sup.c{font-size:.7em;line-height:0}
+sup.c a{text-decoration:none;font-weight:600;padding:0 1px}
+.panel{background:#fff;color:#14202e;border:1px solid var(--line);border-left:6px solid var(--sc,#087a76);border-radius:10px;padding:16px;margin:22px 0}
+.panel h4{margin-top:0}
+.cap{font-size:14px;color:#566475;margin:10px 0 0}
+.panel img{display:block;max-width:100%;height:auto;margin:0 auto}
+.panel img.sm{max-width:min(100%,600px)}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 10px;border-bottom:1px solid #d5dce4;text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal;min-width:190px}
+thead th{border-bottom:2px solid #14202e;font-weight:700}
+tr.tot td{font-weight:700}
+.bars{display:grid;gap:10px;margin:8px 0 0}
+.bar{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;font-size:15px}
+.bar .lab{color:#14202e}
+.bar .track{display:flex;flex-direction:column;gap:4px}
+.bar .fill{height:20px;border-radius:0 4px 4px 0;min-width:2px;position:relative}
+.bar .fill i{position:absolute;left:calc(100% + 8px);top:0;font-style:normal;font-size:13px;line-height:20px;color:#14202e;white-space:nowrap}
+.fill.r{background:#d9531e}.fill.u{background:#2a6fcf}
+.key{display:flex;gap:16px;font-size:14px;color:#14202e;margin:0 0 12px}
+.key span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.key .r::before{background:#d9531e}.key .u::before{background:#2a6fcf}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:20px 0}
+.card{background:#fff;color:#14202e;border:1px solid var(--line);border-top:5px solid var(--sc,#087a76);border-radius:10px;padding:18px}
+.card h4{margin-top:0;font:700 19px/1.25 var(--serif)}
+.card p{font-size:16px}
+.card .tag{font:700 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--sc,#087a76);padding:5px 9px;border-radius:999px;margin-bottom:10px;display:inline-block}
+.note{background:#fff4d6;color:#7a5200;border-left:6px solid var(--sun);border-radius:8px;padding:12px 14px;font-size:15px;margin:16px 0}
+.silence{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:16px 0}
+.silence div{border-top:5px solid var(--sun);background:#fff;color:#14202e;border-radius:8px;padding:12px 14px}
+.silence b{display:block;margin-bottom:4px}
+.calc{background:var(--panel);color:#14202e;border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:20px 0;max-width:72ch}
+.calc ol{margin:8px 0 0;padding-left:22px}
+.calc li{margin-bottom:6px;font-variant-numeric:tabular-nums}
+.cost{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin:20px 0}
+.cost article{background:#fff;color:#14202e;border:1px solid var(--line);border-top:5px solid var(--sc);border-radius:10px;padding:18px}
+.cost article h3{margin:0 0 4px;font-size:21px}
+.cost .size{font:700 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;display:inline-block;margin-bottom:10px;padding:4px 8px;border-radius:999px}
+.sz-s{background:#dff3e4;color:#1d6b35}.sz-m{background:#fff0c9;color:#7a5200}.sz-l{background:#fbdcd2;color:#a1360c}
+.cost p{font-size:16px}
+.verdict{background:#fff;color:#14202e;border:4px solid var(--sc);border-radius:12px;padding:22px;margin:22px 0}
+.verdict .big{font:700 clamp(24px,3vw,32px)/1.2 var(--serif);margin:0 0 10px}
+.cond{counter-reset:c;list-style:none;padding:0;margin:14px 0;display:grid;gap:10px}
+.cond li{counter-increment:c;display:grid;grid-template-columns:34px 1fr;gap:10px;font-size:16px}
+.cond li::before{content:counter(c);width:30px;height:30px;border-radius:50%;background:var(--sc);color:#fff;display:grid;place-items:center;font:700 14px/1 var(--sans)}
+ol.refs{padding-left:0;list-style:none;margin:0;font-size:15px;max-width:80ch}
+ol.refs li{display:grid;grid-template-columns:34px 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+ol.refs li b{font-variant-numeric:tabular-nums;color:var(--muted)}
+ol.refs li:target{background:var(--warnbg)}
+h3.refgroup{font-size:18px;margin:26px 0 4px;color:var(--muted)}
+.todo{background:var(--warnbg);color:var(--warn);border-radius:4px;padding:0 5px;font-size:.9em}
+footer{padding:28px 0 60px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+@media (max-width:560px){.bar{grid-template-columns:1fr}.bar .lab{font-weight:600}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card,.prow .f,.meter i{transition:none}.card:hover{transform:none}}
+#prog{position:fixed;top:0;left:0;height:4px;width:0;background:linear-gradient(90deg,#f5b324,#d9531e,#6f3fc0,#2a6fcf,#1f7f45);z-index:20}
+section{background:linear-gradient(to bottom,color-mix(in srgb,var(--sc) 9%,transparent),transparent 320px)}
+nav.idx a.cur{background:#14202e;color:#fff}
+.card{transition:transform .15s ease,box-shadow .15s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(0,40,40,.16)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px;font-size:14px}
+.chip{font:600 14px/1 var(--sans);padding:8px 12px;border-radius:999px;border:2px solid var(--sc,#087a76);background:#fff;color:#14202e;cursor:pointer}
+.chip.on{background:var(--sc,#087a76);color:#fff}
+.pbars{display:grid;gap:6px}
+.prow{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center;padding:4px 6px;border-radius:8px;cursor:pointer;border:2px solid transparent;background:none;text-align:left;font:inherit;color:inherit;width:100%}
+.prow:hover,.prow.sel,.prow:focus-visible{background:#eaf6f3;border-color:var(--sc)}
+.prow .lab{font-size:14px}
+.prow .t{display:flex;flex-direction:column;gap:3px}
+.prow .f{height:12px;border-radius:0 4px 4px 0;position:relative;transition:width .35s ease}
+.prow .f i{position:absolute;left:calc(100% + 6px);top:-3px;font-style:normal;font-size:12px;line-height:18px;white-space:nowrap}
+.f.r{background:#d9531e}.f.u{background:#2a6fcf}
+.pinfo{font-size:15px;margin:12px 0 0;padding:10px 12px;background:#fff4d6;color:#14202e;border-left:6px solid #f5b324;border-radius:6px}
+input[type=range]{width:100%;accent-color:var(--sc,#087a76);margin:6px 0 10px}
+.lbl{display:block;font-size:15px;font-weight:600}
+.yrout{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.yrout .m{background:#f3faf8;border-radius:10px;padding:12px 14px}
+.yrout .m b{font:700 30px/1.1 var(--serif);color:#c4481a;display:block;font-variant-numeric:tabular-nums}
+.yrout .m span{font-size:14px}
+.meter{height:14px;border-radius:7px;background:#2a6fcf;margin:8px 0;overflow:hidden}
+.meter i{display:block;height:100%;background:#d9531e;transition:width .3s ease}
+.sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:10px}
+.out{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.out div{background:#f3faf8;border-top:5px solid var(--sc);border-radius:8px;padding:10px 12px}
+.out b{display:block;font:700 26px/1.1 var(--serif);font-variant-numeric:tabular-nums}
+.out span{font-size:13px}
+.hint{font-size:14px;color:#566475;margin:8px 0 0}
+.cond li{cursor:pointer;border-radius:8px;padding:6px;border:2px solid transparent}
+.cond li:hover,.cond li:focus-visible{border-color:var(--sc)}
+.cond li.on{background:#e6f5ec}
+.cond li.on::before{content:"\2713"}
+.vres{margin-top:12px;padding:12px 14px;border-radius:8px;font-weight:600;background:#fff4d6;color:#14202e;border-left:6px solid #f5b324}
+.vres.ok{background:#dff3e4;border-left-color:#1f7f45}
+.vres.no{background:#fbdcd2;border-left-color:#c4481a}
+@media (max-width:560px){.prow{grid-template-columns:1fr}}
+#steps{position:fixed;top:0;left:0;right:0;z-index:30;background:rgba(255,255,255,.96);border-bottom:3px solid var(--sun);box-shadow:0 2px 10px rgba(0,40,40,.15);color:#14202e}
+#steps .wrap{display:flex;align-items:center;gap:16px}
+.stw{position:relative;display:grid;grid-template-columns:repeat(8,1fr);flex:1;padding:8px 0 6px}
+.stw .line{position:absolute;top:22px;left:calc(100%/16);right:calc(100%/16);height:4px;background:#d5e6e2;border-radius:2px}
+.stw .fill{height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,#c4481a,#2a6fcf,#6f3fc0,#087a76,#a86400,#1f7f45,#087a76,#4a6870);background-size:calc(100%*1) 100%;transition:width .2s linear}
+.st{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#4a6870;font:600 12px/1.1 var(--sans);text-align:center}
+.st i{font-style:normal;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#fff;border:3px solid #d5e6e2;font:700 12px/1 var(--sans);color:#4a6870}
+.st.done i{background:#087a76;border-color:#087a76;color:#fff}
+.st.cur i{background:#f5b324;border-color:#14202e;color:#14202e;transform:scale(1.12)}
+.st.cur{color:#14202e}
+.st:focus-visible{outline:3px solid var(--rural);outline-offset:2px}
+#steps .extra{display:flex;gap:12px;font:600 13px/1 var(--sans);white-space:nowrap}
+#steps .extra a{color:#087a76}
+@media (max-width:760px){.st span{font-size:10px}.st i{width:24px;height:24px;font-size:11px}.stw .line{top:20px}}
+header.hero{padding-top:92px}
+html{scroll-padding-top:84px}
+.receipt{position:relative;max-width:520px;margin:22px 0 40px;padding:26px 22px 22px;background:#fffdf6;color:#1d1d1d;font:400 15px/1.45 'IBM Plex Mono',ui-monospace,Menlo,monospace;box-shadow:0 10px 26px rgba(0,40,40,.2);transform:rotate(-.6deg)}
+.receipt::before,.receipt::after{content:"";position:absolute;left:0;right:0;height:10px;background:linear-gradient(135deg,transparent 7px,#fffdf6 0) 0 0/14px 10px,linear-gradient(225deg,transparent 7px,#fffdf6 0) 0 0/14px 10px}
+.receipt::before{top:-10px;transform:scaleY(-1)}.receipt::after{bottom:-10px}
+.receipt p{margin:0}
+.rc-title{text-align:center;font-weight:700;font-size:20px;letter-spacing:.12em}
+.rc-sub{text-align:center;font-size:12px;letter-spacing:.06em;margin:2px 0 14px;color:#555}
+.rc-cols{display:flex;justify-content:space-between;font-size:12px;font-weight:600;border-top:2px dashed #1d1d1d;border-bottom:2px dashed #1d1d1d;padding:4px 0;margin-bottom:6px}
+.rc-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:9px 6px;border-bottom:1px dotted #999;text-decoration:none;color:inherit;border-radius:4px}
+.rc-row:hover,.rc-row:focus-visible{background:#fff0b8}
+.rc-row .nm b{display:block;font-size:14px;letter-spacing:.04em}
+.rc-row .nm small{display:block;font-size:12px;color:#555}
+.rc-row .rate{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.rc-row .rate b{font-size:13px;letter-spacing:.08em}
+.m{display:flex;gap:3px}.m i{width:14px;height:12px;border:2px solid #1d1d1d;background:#fff;display:block}
+.lv1 .m i.on,.lv2 .m i.on{background:#1f7f45}.lv3 .m i.on{background:#e0a200}.lv4 .m i.on,.lv5 .m i.on{background:#c4481a}
+.lv1 .rate b{color:#1f7f45}.lv4 .rate b,.lv5 .rate b{color:#c4481a}
+.sr{position:absolute;left:-9999px}
+.rc-total{display:flex;justify-content:space-between;margin-top:10px;padding:8px 0;border-top:2px solid #1d1d1d;border-bottom:2px solid #1d1d1d;font-weight:700;font-size:16px}
+.rc-line2{font-size:12.5px;margin-top:8px}
+.rc-verdict{display:block;margin-top:12px;padding:10px;border:2px solid #1d1d1d;text-align:center;font-weight:700;font-size:13px;color:#1d1d1d;text-decoration:none;background:#dff3e4}
+.rc-verdict:hover,.rc-verdict:focus-visible{background:#1f7f45;color:#fff}
+.rc-note{font-size:11.5px;color:#555;margin-top:10px}
+.rc-bar{height:38px;margin:14px 0 6px;background:repeating-linear-gradient(90deg,#1d1d1d 0 2px,transparent 2px 5px,#1d1d1d 5px 6px,transparent 6px 10px,#1d1d1d 10px 13px,transparent 13px 16px)}
+.rc-thanks{text-align:center;font-weight:600;letter-spacing:.2em;font-size:12px}
+@media (max-width:420px){.rc-row{grid-template-columns:1fr}.rc-row .rate{align-items:flex-start}}
+details.fold>ol.refs{border:2px solid var(--sc);border-top:0;padding:6px 16px;background:#fff;color:#14202e;border-radius:0 0 10px 10px;margin:0;max-width:none}
+.panel a,.card a,.calc a,details.fold a,.q a,.verdict a,.rc-body a,.stat a{color:#087a76}
+#fig4 .prow,#fig5 .prow{padding:2px 6px}
+#fig4 .pbars,#fig5 .pbars{gap:3px}
+#fig4 .prow .f{height:9px}
+#fig5 .sb,#fig5 .sb .seg{height:13px}
+#fig4 .prow .f i{font-size:11px;line-height:14px;top:-3px}
+#fig5 .sb i{font-size:11px}
+#fig4 .prow .lab,#fig5 .prow .lab{font-size:13px}
+#fig4 .prow,#fig5 .prow{grid-template-columns:112px 1fr}
+@media (max-width:560px){#fig4 .prow,#fig5 .prow{grid-template-columns:1fr}}
+.split{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:26px;align-items:center;margin:0 0 14px}
+.split .col{max-width:none}
+.pic{margin:0}
+.pic svg{display:block;width:100%;height:auto;border-radius:16px;box-shadow:0 8px 22px rgba(0,40,40,.2)}
+@media (max-width:820px){.split{grid-template-columns:1fr}.pic{max-width:380px}}
+
+.sum{padding-top:26px}
+.sum .sn{margin-bottom:6px}
+details.more{margin:14px 0}
+details.more>summary{display:inline-block;cursor:pointer;font:700 15px/1.2 var(--sans);padding:9px 14px;border-radius:999px;background:#fff;color:#14202e;border:2px solid var(--sc,#087a76);list-style:none}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::before{content:"+ ";font-weight:700;color:var(--sc,#087a76)}
+details.more[open]>summary::before{content:"\2212 "}
+details.more>summary:hover{background:var(--sun)}
+.morebody{margin-top:10px;padding-left:14px;border-left:5px solid var(--sc,#087a76)}
+details.more.mini>summary{font-size:14px;padding:7px 12px}
+.pts{margin:0 0 4px;padding-left:20px;font-size:16px}
+.pts li{margin-bottom:6px}
+.card .morebody{padding-left:10px}
+
+#fig4,#fig5{display:grid;grid-template-columns:minmax(0,1fr) 250px;column-gap:24px;max-width:940px;align-items:start}
+#fig4>h4,#fig5>h4{grid-column:1/-1}
+#fig4>.key,#fig5>.key{grid-column:1}
+#fig4>.pbars,#fig5>.pbars{grid-column:1}
+#fig4>.side,#fig5>.side{grid-column:2;grid-row:2 / span 2;position:sticky;top:96px}
+.side .pinfo{margin:0 0 14px}
+.side .cap{margin:0}
+@media (max-width:820px){#fig4,#fig5{display:block;max-width:660px}#fig4>.side,#fig5>.side{position:static;margin-top:12px}.side .pinfo{margin:0 0 10px}}
+
+
+.key .c::before{background:#087a76}.key .p::before{background:#e0a200}
+.sb{display:flex;align-items:center;height:18px}
+.sb .seg{height:18px;transition:width .35s ease}
+.sb .seg.c{background:#087a76}.sb .seg.p{background:#e0a200}.sb .seg.n{background:#8a9a9a}
+.sb i{font-style:normal;font-size:13px;margin-left:8px;white-space:nowrap}
+
+.receipt{max-width:780px;transform:none}
+.rc-row{list-style:none;cursor:pointer;grid-template-columns:1fr auto 28px}
+.rc-row::-webkit-details-marker{display:none}
+.rc-row::marker{content:""}
+.chev{width:24px;height:24px;border:2px solid #1d1d1d;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:16px;line-height:1;background:#fff}
+.chev::before{content:"+"}
+details[open]>.rc-row .chev::before{content:"\2212"}
+details[open]>.rc-row{background:#fff0b8}
+.rc-item{border-bottom:1px dotted #999}
+.rc-item>.rc-row{border-bottom:0}
+.rc-body{padding:6px 6px 18px;font:400 16px/1.6 'Source Sans 3',system-ui,sans-serif;color:#14202e;border-top:2px dashed #1d1d1d;margin-top:2px}
+.rc-body p,.rc-body li{font-size:16px}
+.rc-body .col{max-width:none}
+.rc-ev{font:600 11px/1 'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.14em;color:#555;margin:10px 0 8px!important}
+.rc-body .panel,.rc-body .calc{box-shadow:none;border:1px solid #d5dce4;border-left:6px solid var(--sc)}
+.rc-body h4{margin:16px 0 6px}
+details.fold{margin:22px 0}
+details.fold>summary{cursor:pointer;font-weight:700;padding:12px 16px;background:#fff;border:2px solid var(--sc);border-radius:10px;color:#14202e;list-style:none}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary::before{content:"+ ";font-weight:700}
+details.fold[open]>summary::before{content:"\2212 "}
+details.fold[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:0}
+details.fold>.panel{margin-top:0;border-top-left-radius:0;border-top-right-radius:0}
+@media (max-width:420px){.rc-row{grid-template-columns:1fr 28px}.rc-row .rate{grid-column:1;align-items:flex-start}.chev{grid-column:2;grid-row:1}}
+
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
+.scene{width:100%;height:auto;max-width:500px;justify-self:end;border-radius:18px;box-shadow:0 8px 24px rgba(0,40,40,.25)}
+.hero-text{min-width:0}
+.panel.art svg{display:block;width:100%;height:auto}
+@media (max-width:860px){.hero-grid{grid-template-columns:1fr}.scene{justify-self:center;max-width:420px}}
+
+
+
+</style>
+</head>
+<body>
+
+<header class="hero">
+<svg class="ecg" viewBox="0 0 1200 46" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round" points="0,30 220,30 250,30 270,8 292,42 312,18 330,30 640,30 670,30 690,6 712,42 732,16 752,30 1200,30"/></svg>
+<div class="wrap hero-grid">
+<div class="hero-text">
+<p class="eyebrow">PLS519 · An AI Answer for Kazakhstan · Rural healthcare access</p>
+<h1>The doctors went to the cities</h1>
+<p class="lede">Kazakhstan has more health workers every year, yet most of the growth lands in cities. This project asks why, and whether an AI decision-support system could help the few professionals who stay in the villages, at a price worth paying.</p>
+<div class="stats">
+  <p class="stat r" style="margin:0"><b>19.7</b><span>physicians per 10,000 rural residents, 2025<sup class="c"><a href="#r25">[25]</a></sup></span></p>
+  <p class="stat u" style="margin:0"><b>53.0</b><span>physicians per 10,000 city residents, 2025<sup class="c"><a href="#r25">[25]</a></sup></span></p>
+</div>
+</div>
+<svg class="scene" viewBox="0 0 480 320" role="img" aria-label="Illustration: a village clinic and a yurt on the steppe, a road winding to a distant city, and a sign reading 40 to 70 kilometres.">
+<circle cx="92" cy="72" r="46" fill="#f5b324" opacity=".25"/><circle cx="92" cy="72" r="30" fill="#f5b324"/>
+<g fill="#cdeee6" opacity=".95"><rect x="338" y="156" width="22" height="50"/><rect x="364" y="140" width="26" height="66"/><rect x="394" y="166" width="20" height="40"/><rect x="418" y="148" width="28" height="58"/><rect x="450" y="170" width="22" height="36"/></g>
+<g fill="#0a6a73" opacity=".35"><rect x="344" y="164" width="4" height="5"/><rect x="352" y="164" width="4" height="5"/><rect x="370" y="150" width="4" height="5"/><rect x="380" y="150" width="4" height="5"/><rect x="424" y="158" width="4" height="5"/><rect x="434" y="158" width="4" height="5"/></g>
+<path d="M0 214 C80 176 160 196 240 208 S400 198 480 204 V320 H0Z" fill="#79c47c"/>
+<path d="M0 256 C100 220 220 246 320 240 S440 230 480 236 V320 H0Z" fill="#3f9a5c"/>
+<path d="M196 320 L276 320 C304 272 336 238 376 208 L364 205 C320 236 272 266 196 320Z" fill="#ead9a4"/>
+<path d="M236 320 C268 272 314 238 370 206" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="9 8"/>
+<polygon points="58,222 112,194 166,222" fill="#d9531e"/>
+<rect x="70" y="222" width="84" height="44" fill="#fff"/>
+<rect x="104" y="244" width="16" height="22" fill="#2a6fcf"/>
+<path d="M107 224h10v8h8v10h-8v8h-10v-8h-8v-10h8z" fill="#d9531e" transform="translate(-1 -2)"/>
+<rect x="76" y="236" width="16" height="12" fill="#bfe3f5"/><rect x="132" y="236" width="16" height="12" fill="#bfe3f5"/>
+<path d="M176 262 V240 Q200 212 224 240 V262Z" fill="#f7f1e0"/><path d="M176 240 Q200 212 224 240Z" fill="#fff"/>
+<rect x="194" y="248" width="12" height="14" fill="#8a6a3a"/>
+<circle cx="130" cy="276" r="6" fill="#f2c9a0"/><rect x="124" y="282" width="12" height="20" rx="3" fill="#fff"/>
+<rect x="262" y="214" width="80" height="28" rx="5" fill="#fff"/><text x="302" y="233" text-anchor="middle" font-family="Source Sans 3,system-ui,sans-serif" font-size="15" font-weight="700" fill="#14202e">40–70 km</text>
+<rect x="298" y="242" width="5" height="30" fill="#8a6a3a"/>
+<path d="M300 90 q8 -8 16 0 q8 -8 16 0" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".8"/>
+<path d="M250 64 q6 -6 12 0 q6 -6 12 0" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".8"/>
+</svg>
+</div>
+</header>
+
+<nav id="steps" aria-label="Progress through the project"><div class="wrap"><div class="stw"><div class="line" aria-hidden="true"><div class="fill" id="stfill"></div></div><a href="#problem" class="st"><i>1</i><span>Problem</span></a><a href="#data" class="st"><i>2</i><span>Data</span></a><a href="#research" class="st"><i>3</i><span>Research</span></a><a href="#solution" class="st"><i>4</i><span>Solution</span></a><a href="#bill" class="st"><i>5</i><span>The Bill</span></a><a href="#verdict" class="st"><i>6</i><span>Verdict</span></a><a href="#transparency" class="st"><i>7</i><span>AI statement</span></a><a href="#references" class="st"><i>8</i><span>Sources</span></a></div></div></nav>
+
+<main class="wrap">
+<div class="sum" id="summary">
+<p class="sn" style="--sc:#14202e">In 60 seconds</p>
+<div class="grid3">
+<div class="card" style="--sc:#c4481a"><span class="tag">The problem</span><p>Rural Kazakhstan has 19.7 physicians per 10,000 people against 53.0 in cities. Between 2019 and 2023 about 86% of new doctors went to cities, and incentives have not moved the rural share. <a href="#problem">See the problem</a></p></div>
+<div class="card" style="--sc:#087a76"><span class="tag">The proposal</span><p>A state-funded AI decision-support tool for rural clinics: guideline advice, image checks and paperwork help for doctors and nurses. The clinician always decides. Based on Ethiopia’s HEP Assist and India’s TB X-ray screening. <a href="#solution">See the proposal</a></p></div>
+<div class="card" style="--sc:#1f7f45"><span class="tag">The verdict</span><p>Yes, but only if six conditions hold. The environmental cost is small; the economic, labour and governance costs are not. If AI becomes a cheaper substitute for recruiting doctors, the answer is no. <a href="#bill">See the bill</a> · <a href="#verdict">the verdict</a></p></div>
+</div></div>
+
+<!-- ============ 1 PROBLEM ============ -->
+<section id="problem" style="--sc:#c4481a">
+<p class="sn">Section 1</p>
+<h2>The problem: where health workers work</h2>
+<p class="claim">Access to healthcare in rural Kazakhstan is limited, and the main reason is not the overall number of medical workers but where they work.</p>
+<div class="split">
+<div class="col">
+<p>About 7.38 million people, roughly 36% of the population, live in rural areas<sup class="c"><a href="#r20">[20]</a></sup>. Yet in 2023 only 16.9% of the country’s doctors worked there. The overall workforce is growing. Between 2019 and 2023 the number of doctors rose from 74,046 to 81,285, and the number of mid-level medical personnel from 179,837 to 190,644<sup class="c"><a href="#r19">[19]</a></sup>. The growth went almost entirely to cities. Urban areas gained 6,259 doctors and rural areas only 980, so about 86% of new doctors went to cities. The rural share of doctors did not improve: it was 17.2% in 2019 and 16.9% in 2023<sup class="c"><a href="#r19">[19]</a></sup>.</p>
+</div>
+<figure class="pic"><svg viewBox="0 0 360 240" role="img" aria-label="Illustration: a rural village with houses, a yurt, power poles, mountains behind and a small clinic with a red cross.">
+<rect width="360" height="240" fill="#d9f1ec"/><circle cx="300" cy="48" r="22" fill="#f5b324"/>
+<polygon points="0,150 70,92 130,140 190,80 260,145 320,104 360,140 360,175 0,175" fill="#a9cfd0"/>
+<path d="M0 172 C80 152 200 177 360 162 V240 H0Z" fill="#79c47c"/><path d="M0 208 C100 188 250 218 360 198 V240 H0Z" fill="#3f9a5c"/>
+<path d="M176 240 C186 218 204 206 216 198" stroke="#ead9a4" stroke-width="12" fill="none" stroke-linecap="round"/>
+<rect x="40" y="162" width="52" height="34" fill="#f7e9c8"/><polygon points="34,162 66,138 98,162" fill="#c4481a"/><rect x="60" y="178" width="12" height="18" fill="#8a6a3a"/><rect x="45" y="170" width="10" height="10" fill="#bfe3f5"/>
+<rect x="116" y="176" width="44" height="30" fill="#fff"/><polygon points="110,176 138,154 166,176" fill="#2a6fcf"/><rect x="132" y="188" width="11" height="18" fill="#8a6a3a"/>
+<path d="M226 186 Q250 156 274 186Z" fill="#fff" stroke="#cbbf9d"/><rect x="226" y="186" width="48" height="16" fill="#f7f1e0"/><rect x="244" y="190" width="12" height="12" fill="#8a6a3a"/>
+<rect x="290" y="174" width="52" height="30" fill="#fff"/><rect x="286" y="166" width="60" height="9" fill="#d9531e"/><rect x="306" y="180" width="14" height="14" fill="#d9531e"/><path d="M311 182h4v4h4v4h-4v4h-4v-4h-4v-4h4z" fill="#fff"/>
+<g stroke="#4a6870" stroke-width="3"><line x1="196" y1="118" x2="196" y2="196"/><line x1="184" y1="126" x2="208" y2="126"/></g>
+<path d="M184 126 Q140 140 98 130" stroke="#4a6870" stroke-width="1.5" fill="none"/><path d="M208 126 Q250 140 286 128" stroke="#4a6870" stroke-width="1.5" fill="none"/>
+</svg></figure>
+</div>
+
+<div class="panel">
+<h4>Figure 1. Where the 2019–2023 growth went</h4>
+<div class="key"><span class="r">Rural</span><span class="u">Urban</span></div>
+<div class="bars" role="img" aria-label="Doctors added 2019 to 2023: urban 6,259, rural 980. Mid-level staff added: urban 7,118, rural 3,689.">
+  <div class="bar"><span class="lab">Doctors added</span><span class="track"><span class="fill u" style="width:61.6%"><i>Urban +6,259</i></span><span class="fill r" style="width:9.6%"><i>Rural +980</i></span></span></div>
+  <div class="bar"><span class="lab">Mid-level staff added</span><span class="track"><span class="fill u" style="width:70%"><i>Urban +7,118</i></span><span class="fill r" style="width:36.3%"><i>Rural +3,689</i></span></span></div>
+</div>
+<p class="cap">Own calculation: 2023 minus 2019 from Table 1 (data from Demushkan, 2024<sup class="c"><a href="#r19">[19]</a></sup>). Both groups share one scale; the longest bar is 7,118 (70% of the track, to leave room for labels). Rural doctors received 13.5% of the increase in doctors; rural mid-level staff received 34.1% of the increase in mid-level staff.</p>
+</div>
+<div class="panel" id="yearx">
+<h4>Try it: how much of the workforce is rural?</h4>
+<label for="yr" class="lbl">Year: <b id="yrv">2019</b></label>
+<input type="range" id="yr" min="2019" max="2023" step="1" value="2019" aria-describedby="yrout">
+<div id="yrout" class="yrout" aria-live="polite"></div>
+<p class="cap">Own calculation from Table 1 (data from Demushkan, 2024<sup class="c"><a href="#r19">[19]</a></sup>). Drag the slider and watch the rural share of doctors barely move, while the rural share of mid-level staff stays near 29%.</p>
+</div>
+
+<details class="more"><summary>Read more: the tables, the 2026 shortage, graduates and what the state has tried</summary><div class="morebody">
+<div class="panel">
+<h4>Table 1. Medical workforce by location, 2019–2023</h4>
+<div class="scroll"><table>
+<thead><tr><th>Year</th><th>2019</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th></tr></thead>
+<tbody>
+<tr><td>Doctors, rural</td><td>12,736</td><td>13,365</td><td>13,395</td><td>13,480</td><td>13,716</td></tr>
+<tr><td>Doctors, urban</td><td>61,310</td><td>63,078</td><td>64,832</td><td>65,781</td><td>67,569</td></tr>
+<tr class="tot"><td>Doctors, total</td><td>74,046</td><td>76,443</td><td>78,227</td><td>79,261</td><td>81,285</td></tr>
+<tr><td>Mid-level personnel, rural</td><td>51,298</td><td>54,095</td><td>54,371</td><td>55,504</td><td>54,987</td></tr>
+<tr><td>Mid-level personnel, urban</td><td>128,539</td><td>131,662</td><td>134,429</td><td>135,798</td><td>135,657</td></tr>
+<tr class="tot"><td>Mid-level personnel, total</td><td>179,837</td><td>185,757</td><td>188,800</td><td>191,302</td><td>190,644</td></tr>
+</tbody></table></div>
+<p class="cap">Source: Demushkan (2024)<sup class="c"><a href="#r19">[19]</a></sup>. Rural doctors’ share: 12,736 / 74,046 = 17.2% (2019); 13,716 / 81,285 = 16.9% (2023).</p>
+</div>
+<div class="col">
+<p>Shortages also persist, and they are being closed unevenly. Between 2021 and 2023 the shortage of doctors in urban areas fell by 35% (from 5,728 to 3,742), but in rural areas by only 17% (from 1,344 to 1,122). For mid-level personnel the urban shortage fell by 40% and the rural shortage by 19%. Rural areas therefore make up a growing share of the remaining shortage: 23% of the doctor shortage in 2023, up from 19% in 2021<sup class="c"><a href="#r19">[19]</a></sup>.</p>
+</div>
+<div class="panel">
+<h4>Table 2. Staff shortage (deficit) by location, 2021–2023</h4>
+<div class="scroll"><table>
+<thead><tr><th>Year</th><th>2021</th><th>2022</th><th>2023</th></tr></thead>
+<tbody>
+<tr><td>Doctors, rural</td><td>1,344</td><td>1,424</td><td>1,122</td></tr>
+<tr><td>Doctors, urban</td><td>5,728</td><td>4,903</td><td>3,742</td></tr>
+<tr class="tot"><td>Doctors, total</td><td>7,072</td><td>6,327</td><td>4,864</td></tr>
+<tr><td>Mid-level personnel, rural</td><td>1,139</td><td>1,220</td><td>926</td></tr>
+<tr><td>Mid-level personnel, urban</td><td>6,468</td><td>5,372</td><td>3,894</td></tr>
+<tr class="tot"><td>Mid-level personnel, total</td><td>7,606</td><td>6,592</td><td>4,820</td></tr>
+</tbody></table></div>
+<p class="cap">Source: Demushkan (2024)<sup class="c"><a href="#r19">[19]</a></sup>. Rural doctors’ share of the doctor shortage: 1,344 / 7,072 = 19.0% (2021); 1,122 / 4,864 = 23.1% (2023).</p>
+</div>
+<div class="col">
+<p>Data for January 2026 count full-time positions, so they are not directly comparable with the 2023 figures. They show a shortage of 23,161 positions for doctors and 22,649 for mid-level personnel, despite a workforce of about 86,500 doctors and 189,500 mid-level staff<sup class="c"><a href="#r21">[21]</a></sup>. The gap is visible in everyday access. The availability of doctors for the rural population is 2.7 times lower than for the urban population<sup class="c"><a href="#r22">[22]</a></sup>. Rural areas need more than 3,000 specialists, especially general practitioners, obstetricians and radiologists, and residents of remote villages may travel 40–70 km to reach a doctor, longer in winter<sup class="c"><a href="#r23">[23]</a></sup>.</p>
+<p>Part of the explanation lies in the choices of young specialists. In 2023, 348 medical graduates started work in Almaty and 356 in Astana. More graduates went to villages than to cities in only five regions: Turkistan, Kyzylorda, Jambyl, Almaty and Akmola. In Aktobe region, 16 graduates began work in villages and 90 in cities<sup class="c"><a href="#r19">[19]</a></sup>.</p>
+<p>The state has responded mainly with infrastructure and incentives. Under the national project “Modernization of Rural Healthcare”, 655 primary healthcare facilities were planned and built<sup class="c"><a href="#r24">[24]</a></sup>. The number of doctors receiving social support (housing, relocation allowances and compensation for utility costs) rose from 263 in 2023 to 796 in 2024 and 1,760 in 2025, a 6.7-fold increase<sup class="c"><a href="#r21">[21]</a></sup>. Yet the rural share of doctors has not moved.</p>
+</div>
+</div></details>
+
+<h3>The social-science question</h3>
+
+<div class="q"><b class="tag">Research question</b>
+<p>How might mechanisms be restructured so that rural residents gain genuine access to medical care?</p></div>
+<div class="col"><p>The core issue is an inequality of access, driven by institutional factors. Those who suffer most are the people with the fewest options to travel to a city for treatment.</p></div>
+<details class="more"><summary>Read more: why institutions matter</summary><div class="morebody">
+<div class="col">
+<p>Healthcare professionals are a labour resource, and the conditions of their employment are shaped by institutions: how the state allocates university graduates and compensates their labour; the geographic concentration of hospitals; the availability of professional training and career advancement in large cities; and the system of financial incentives. If these institutions make working in a city more attractive, then the presence of facilities or the offer of bonuses in rural areas will not, by itself, draw doctors there.</p>
+</div>
+</div></details>
+</section>
+
+<!-- ============ 2 DATA ============ -->
+<section id="data" style="--sc:#2a6fcf">
+<p class="sn">Section 2</p>
+<h2>Background and data: what is measured, and what is not</h2>
+<div class="col">
+<p>Four kinds of bodies measure this issue. The <b>Bureau of National Statistics</b> counts people: births, deaths and population by region and by urban or rural residence<sup class="c"><a href="#r26">[26]</a><a href="#r27">[27]</a></sup>. The <b>Ministry of Health</b> counts supply: physicians per 10,000 people and rural facilities in its statistical compendium<sup class="c"><a href="#r25">[25]</a></sup>, and shortages in its press releases<sup class="c"><a href="#r21">[21]</a></sup>. The <b>Kazakh School of Public Health</b> workforce analysis gives trends by location<sup class="c"><a href="#r19">[19]</a></sup>. <b>WHO</b> sets the benchmark of 44.5 health workers per 10,000 people<sup class="c"><a href="#r28">[28]</a></sup>, counting physicians, nurses and midwives. Researchers interpret these numbers, for example Jobalayeva et al.<sup class="c"><a href="#r2">[2]</a></sup>.</p>
+</div>
+
+<h3>Demand: rural births outnumber deaths</h3>
+<div class="col">
+<p>The number of rural births has declined each year since 2021 (statistics for 2020–2025), while the number of rural deaths has barely changed since 2022, at a little above 50,000 a year<sup class="c"><a href="#r26">[26]</a></sup>.</p>
+</div>
+<div class="panel">
+<h4>Figure 2. Rural births and deaths, Kazakhstan, 2020–2025</h4>
+<img class="sm" src="img/fig-births-deaths.png" alt="Line chart. Rural births fall from 183,165 in 2021 to 130,098 in 2025. Rural deaths stay near 50,000 a year from 2022.">
+<p class="cap">Source: Bureau of National Statistics<sup class="c"><a href="#r26">[26]</a></sup>, rural areas, national totals.</p>
+</div>
+
+<details class="fold"><summary>Read more: births and deaths in each oblast (text and Figure 3)</summary>
+<div class="col">
+<p>Despite the fall in births, births still exceed deaths in every region except Kostanay, East Kazakhstan and North Kazakhstan. The gap in favour of births is largest in Mangystau, Turkistan, Atyrau, Kyzylorda, Jambyl, Aktobe, Ulytau and Jetysu; other regions have smaller gaps<sup class="c"><a href="#r26">[26]</a></sup>. So falling births in general does not mean a dramatic fall in every rural region. This agrees with Jobalayeva et al.<sup class="c"><a href="#r2">[2]</a></sup> (p. 7): “Despite the continuous outflow of people to urban areas, the number of rural inhabitants has increased due to high birth rates among the rural population, leading to a decline in the density of healthcare facilities.” More people need more doctors and hospital places.</p>
+</div>
+<div class="panel">
+<h4>Figure 3. Rural births and deaths by oblast, 2020–2025</h4>
+<img src="img/fig-births-deaths-oblast.png" alt="Eighteen small line charts, one per oblast. In most, the blue births line stays well above the orange deaths line. In Kostanay, East Kazakhstan and North Kazakhstan the two lines are close or cross.">
+<p class="cap">Lines show rate per 1,000 rural residents; labels show actual counts. The rate uses one undated rural population per oblast held constant across years, so trends equal the count trends and levels are approximate. Source: Bureau of National Statistics<sup class="c"><a href="#r26">[26]</a></sup>.</p>
+</div>
+</details>
+
+<h3>Supply: fewer physicians and fewer facilities</h3>
+<div class="col"><p>Every oblast has far fewer physicians per 10,000 rural residents than per 10,000 urban residents. Nationally the rural rate is 19.7 against 53.0, a gap of 2.7 times<sup class="c"><a href="#r25">[25]</a></sup>.</p></div>
+<details class="more"><summary>Read more: the WHO benchmark and what the compendium counts</summary><div class="morebody">
+<div class="col">
+<p>WHO’s threshold is 44.5 health workers per 10,000 people, enough for high coverage of the health-related Sustainable Development Goals<sup class="c"><a href="#r28">[28]</a></sup>; “health workers” here means physicians, nurses and midwives<sup class="c"><a href="#r2">[2]</a></sup>. The Ministry’s compendium publishes physicians only, so the benchmark cannot be checked directly against it. What it does show is that every oblast has far fewer physicians per 10,000 rural residents than per 10,000 urban residents. Nationally the rural rate is 19.7 against 53.0, a gap of 2.7 times<sup class="c"><a href="#r25">[25]</a></sup>. The problem lies in distribution between rural and urban areas.</p>
+</div>
+</div></details>
+<div class="panel" id="fig4">
+<h4>Figure 4. Physicians per 10,000 residents, rural vs urban, by oblast, 2025</h4>
+
+<div class="key"><span class="r">Rural</span><span class="u">Urban</span></div>
+<div id="phys" class="pbars"></div>
+<div class="side"><p id="physinfo" class="pinfo" aria-live="polite">Tap or hover a row to compare. Kazakhstan overall: 19.7 rural against 53.0 urban per 10,000, a gap of 2.7 times.</p>
+
+<p class="cap">Physicians of all specialties, excluding dentists. Source: Ministry of Health statistical compendium 2024–2025, Table 20, p. 215<sup class="c"><a href="#r25">[25]</a></sup>. Mid-level staff are not published by urban and rural location.</p></div>
+</div>
+<div class="col"><p>Rural facilities are also spread unevenly. Turkistan and Almaty regions have the largest rural populations but fewer facilities per head than most regions<sup class="c"><a href="#r27">[27]</a></sup>.</p></div>
+<details class="more"><summary>Read more: how the facility figures were calculated</summary><div class="morebody">
+<div class="col">
+<p>Rural facilities are also spread unevenly. Using rural population by region<sup class="c"><a href="#r27">[27]</a></sup> and the number of medical organisations in rural districts (compendium, p. 196<sup class="c"><a href="#r25">[25]</a></sup>), the number of facilities per 10,000 rural residents was calculated for 2025. Turkistan and Almaty regions have the largest rural populations (1,612,638 and 1,257,238 people) but fewer outpatient clinics, family medical clinics, feldsher-midwife stations and medical posts per head than most regions. Ulytau had fewer than 50,000 rural residents the year before<sup class="c"><a href="#r27">[27]</a></sup>.</p>
+</div>
+</div></details>
+<div class="panel" id="fig5">
+<h4>Figure 5. Rural health facilities per 10,000 rural inhabitants, by region, 2025</h4>
+<div class="key"><span class="c">Outpatient clinics and family medical clinics</span><span class="p">Feldsher-midwife stations and medical posts</span></div>
+<div id="fac" class="pbars"></div>
+<div class="side"><p id="facinfo" class="pinfo" aria-live="polite">Tap or hover a row to see the split. Kazakhstan overall: 1.9 clinics + 4.7 feldsher-midwife stations and posts = 6.7 per 10,000 rural inhabitants.</p>
+<p class="cap">Own calculation from counts of facilities<sup class="c"><a href="#r25">[25]</a></sup> and rural population<sup class="c"><a href="#r27">[27]</a></sup>. Counts of sites, not staff or distance. Totals are as published in the table, so they can differ by 0.1 from the sum of the two parts because of rounding. For Mangystau the table gives only the total (1.2).</p></div>
+</div>
+<div class="col">
+<p>Taken together, people in rural areas still do not have enough health workers, facilities are distributed unevenly, and rural areas with dense populations lack enough clinics and posts. Rural access stays low even though hospitals have been modernised and social support for doctors has grown. Because births exceed deaths in most regions, rural populations still grow naturally even as births fall.</p>
+</div>
+
+<h3>Where the data are silent</h3>
+<div class="split">
+<div class="col"><p>Elderly people and people with disabilities visit hospitals most often and need physically accessible clinics, yet the official statistics do not show them.</p></div>
+<figure class="pic"><svg viewBox="0 0 360 240" role="img" aria-label="Illustration: a doctor in a white coat with a stethoscope speaks with an elderly patient in a headscarf who leans on a cane.">
+<rect width="360" height="240" fill="#e6f5ec"/><rect y="204" width="360" height="36" fill="#c9e6dc"/>
+<rect x="20" y="26" width="40" height="40" rx="4" fill="#fff"/><path d="M36 32h8v10h10v8H44v10h-8V50H26v-8h10z" fill="#d9531e"/>
+<rect x="92" y="198" width="14" height="30" fill="#2a3f5f"/><rect x="114" y="198" width="14" height="30" fill="#2a3f5f"/>
+<rect x="84" y="102" width="56" height="100" rx="12" fill="#fff" stroke="#cfd8d6" stroke-width="2"/>
+<circle cx="112" cy="80" r="19" fill="#f2c9a0"/><path d="M93 76 Q112 52 131 76 Q112 66 93 76Z" fill="#3a2a22"/>
+<path d="M100 106 q12 34 24 0" stroke="#087a76" stroke-width="4" fill="none"/><circle cx="112" cy="144" r="6" fill="#087a76"/>
+<path d="M136 116 L176 130" stroke="#cfd8d6" stroke-width="18" stroke-linecap="round"/><path d="M136 116 L176 130" stroke="#fff" stroke-width="14" stroke-linecap="round"/><circle cx="182" cy="132" r="8" fill="#f2c9a0"/>
+<rect x="236" y="198" width="12" height="30" fill="#4a6870"/><rect x="256" y="198" width="12" height="30" fill="#4a6870"/>
+<rect x="226" y="116" width="52" height="86" rx="14" fill="#d9531e"/>
+<circle cx="252" cy="96" r="17" fill="#f2c9a0"/><path d="M233 98 Q252 64 271 98 Q252 86 233 98Z" fill="#6f3fc0"/>
+<path d="M276 134 L294 140" stroke="#d9531e" stroke-width="13" stroke-linecap="round"/><line x1="296" y1="136" x2="302" y2="226" stroke="#8a6a3a" stroke-width="5" stroke-linecap="round"/><path d="M290 136 q6 -8 14 -2" stroke="#8a6a3a" stroke-width="5" fill="none" stroke-linecap="round"/>
+</svg></figure>
+</div>
+<div class="silence">
+<div><b>Distance</b><span>No source gives the distance from a village to the nearest medical centre or doctor. A facility count says a clinic exists, not that residents can reach it, especially the most remote villages.</span></div>
+<div><b>Quality and equipment</b><span>There is no data on the quality of services, equipment or technology. Staff and clinics can exist in a village while quality and quantity are too low for patients to get the procedures they need. Presence is not the same as help.</span></div>
+<div><b>Who falls through the gaps</b><span>Official statistics split urban and rural residents by sex, but are silent on elderly people and people with disabilities, who visit hospitals most often and need physically accessible clinics.</span></div>
+</div>
+
+<h3>How far the numbers can be trusted</h3>
+<div class="col">
+<p>The counts can be trusted because official bodies produce them. They cannot show the whole picture of access, because they lack the information listed above. A region with more clinics and posts per 10,000 rural residents, such as North Kazakhstan, does not necessarily give people better access than Mangystau, which has the fewest facilities. Two further limits matter: the January 2026 shortage counts full-time positions while the 2023 report counts people, so the two cannot be compared; and the physicians-only compendium cannot be set against WHO’s benchmark that includes nurses and midwives.</p>
+</div>
+</section>
+
+<!-- ============ 3 RESEARCH ============ -->
+<section id="research" style="--sc:#6f3fc0">
+<p class="sn">Section 3</p>
+<h2>Current state of research</h2>
+<div class="split">
+<div class="col">
+<p>Research on health workers in rural Kazakhstan falls into three approaches: assessing staff shortages; examining strategies for recruiting and retaining personnel; and analysing delivery models that use limited human resources more efficiently. These areas rarely overlap, and none of the sources reviewed addresses artificial intelligence. Most focus on Kazakhstan, with regional and global comparisons.</p>
+</div>
+<figure class="pic"><svg viewBox="0 0 360 240" role="img" aria-label="Illustration: a mobile clinic van with a red cross and a satellite dish drives along a road past hills.">
+<rect width="360" height="240" fill="#dbeafb"/><circle cx="60" cy="52" r="20" fill="#f5b324"/>
+<polygon points="0,150 60,110 120,146 200,98 270,148 330,118 360,140 360,170 0,170" fill="#b7cfe8"/>
+<path d="M0 168 C100 148 260 178 360 158 V196 H0Z" fill="#79c47c"/><rect y="196" width="360" height="30" fill="#c9d3d1"/><line x1="0" y1="211" x2="360" y2="211" stroke="#fff" stroke-width="3" stroke-dasharray="16 12"/>
+<rect x="84" y="118" width="176" height="72" rx="10" fill="#fff" stroke="#cfd8d6" stroke-width="2"/>
+<path d="M260 138 h34 l18 24 v28 h-52Z" fill="#fff" stroke="#cfd8d6" stroke-width="2"/><polygon points="268,146 290,146 304,164 268,164" fill="#bfe3f5"/>
+<rect x="84" y="164" width="176" height="9" fill="#d9531e"/>
+<path d="M166 130h16v14h14v16h-14v14h-16v-14h-14v-16h14z" fill="#d9531e" transform="translate(0 -4)"/>
+<path d="M108 118 v-14" stroke="#4a6870" stroke-width="3"/><path d="M92 104 q16 -22 34 0z" fill="#087a76"/><path d="M134 90 q12 -12 24 0 M140 80 q16 -16 32 0" stroke="#087a76" stroke-width="3" fill="none" stroke-linecap="round"/>
+<circle cx="126" cy="192" r="17" fill="#14202e"/><circle cx="126" cy="192" r="7" fill="#c9d3d1"/><circle cx="276" cy="192" r="17" fill="#14202e"/><circle cx="276" cy="192" r="7" fill="#c9d3d1"/>
+</svg></figure>
+</div>
+<div class="grid3">
+<div class="card"><span class="tag">Approach 1</span><h4>The shortage: facilities, staff and where they are</h4><ul class="pts"><li>Rural facilities fell between 2004 and 2022, lowest in the south and west<sup class="c"><a href="#r2">[2]</a></sup></li><li>In 2017 rural areas had 14.47 doctors per 10,000 against 43.71 in urban regions<sup class="c"><a href="#r11">[11]</a></sup></li><li>Medicine supply is 30% lower in rural areas, and about 69% of rural residents self-medicate<sup class="c"><a href="#r13">[13]</a></sup></li></ul><details class="more mini"><summary>Read the full review</summary><div class="morebody">
+<p>Jobalayeva et al.<sup class="c"><a href="#r2">[2]</a></sup> studied facility numbers for 2004–2022 and found a general reduction of outpatient and inpatient facilities in rural areas, lowest in the south and west, and expect the trend to continue with rural population growth. Shayakhmetov et al.<sup class="c"><a href="#r6">[6]</a></sup> (p. 398) describe low staffing and ineffective rural health care that “requires radical structural and functional restructuring”. Haruna et al.<sup class="c"><a href="#r5">[5]</a></sup> note that despite a 76% universal health coverage index, rural access is limited.</p>
+<p>Shaltynov et al.<sup class="c"><a href="#r11">[11]</a></sup> used the Gini coefficient for 2002–2023: in 2017 rural areas had 14.47 doctors per 10,000 against 43.71 in urban regions, and western and southern regions have fewer staff and beds. Spankulova et al.<sup class="c"><a href="#r13">[13]</a></sup> (survey of 1,673 people) report medicine supply 30% lower in rural areas, around 69% of rural residents relying on self-medication, and about 44% travelling to urban regions for care. Mseke et al.<sup class="c"><a href="#r16">[16]</a></sup> show that travel time is a key measure of access.</p></div></details></div>
+<div class="card"><span class="tag">Approach 2</span><h4>Recruiting and retaining: do the mechanisms work?</h4><ul class="pts"><li>The 2009 incentive scheme did little, partly because of tenge devaluation<sup class="c"><a href="#r1">[1]</a></sup></li><li>Support is described as non-transparent, with unattractive vacancies<sup class="c"><a href="#r3">[3]</a></sup>; Thailand paid salaries 2–7 times higher<sup class="c"><a href="#r7">[7]</a></sup></li><li>Kyrgyzstan added a compulsory rural year<sup class="c"><a href="#r10">[10]</a></sup>, yet only 8% of Almaty students want village work<sup class="c"><a href="#r14">[14]</a></sup></li></ul><details class="more mini"><summary>Read the full review</summary><div class="morebody">
+<p>Jobalayeva et al.<sup class="c"><a href="#r1">[1]</a></sup> report that the 2009 incentive scheme (housing loan and one-off allowance) did little to raise rural staff numbers, partly because of tenge devaluation. Malbekova et al.<sup class="c"><a href="#r3">[3]</a></sup> find social support far from ideal, citing lack of transparency and unattractive vacancies, and describe richer packages in Germany, Italy and France. Strasser et al.<sup class="c"><a href="#r7">[7]</a></sup> report that Thailand raised rural physician numbers sharply with salaries 2–7 times higher than usual. Baimuratova et al.<sup class="c"><a href="#r4">[4]</a></sup> (p. 110) call for “integrated workforce policies, social support, organizational redesign, intersectoral collaboration, telemedicine, and patient-oriented digital services”. WHO<sup class="c"><a href="#r9">[9]</a></sup> recommends action on education, finance, personal and professional support, and regulation.</p>
+<p>Haruna et al.<sup class="c"><a href="#r5">[5]</a></sup> and Fonken et al.<sup class="c"><a href="#r10">[10]</a></sup> describe Kyrgyzstan, where community initiatives, a compulsory year of rural training from 2017, higher salaries, internet and housing improved rural access. These changes matter because in an Almaty survey only 8% of students wanted to work in villages<sup class="c"><a href="#r14">[14]</a></sup>.</p></div></details></div>
+<div class="card"><span class="tag">Approach 3</span><h4>Delivery models: community programmes, mobile clinics, telemedicine</h4><ul class="pts"><li>Community programmes, outreach and mobile clinics, and empanelment are the main options<sup class="c"><a href="#r8">[8]</a></sup></li><li>Telemedicine is recommended for Kazakhstan<sup class="c"><a href="#r2">[2]</a></sup><sup class="c"><a href="#r4">[4]</a></sup></li><li>Mobile communication (calls, texts, apps) can widen access<sup class="c"><a href="#r5">[5]</a></sup></li></ul><details class="more mini"><summary>Read the full review</summary><div class="morebody">
+<p>This literature offers ways to widen access even if shortages remain. Gizaw et al.<sup class="c"><a href="#r8">[8]</a></sup> list community health programmes, student-led services, school-based services, outreach and mobile clinics, family health programmes, empanelment, community health funding and work with non-profit private providers. Telemedicine appears repeatedly: Jobalayeva et al.<sup class="c"><a href="#r2">[2]</a></sup> say it should be used in Kazakhstan, and Baimuratova et al.<sup class="c"><a href="#r4">[4]</a></sup> (p. 119) see “significant potential to improve continuity, efficiency, and equity of access”, especially in countries with large territories and uneven population distribution. Haruna et al.<sup class="c"><a href="#r5">[5]</a></sup> argue mobile communication (calls, texts, video, apps) can expand access.</p></div></details></div>
+</div>
+<h3>The gap this project speaks to</h3>
+<div class="col">
+<p>Incentive schemes and social support have not removed unequal access in Kazakhstan. Community initiatives, higher wages, housing, cars and better living conditions improved rural access elsewhere in the region and the world, and telemedicine and outreach clinics are proposed too. It is still contested whether these would work here: Kazakhstani students prefer urban work, so financial incentives may only work as part of a well-organised system, and it is unclear that such a system is achievable.</p>
+<p>No research studies AI-based tools that could support the recruitment, retention or distribution of human resources as rural needs fluctuate. Digital tools in Kazakhstan also raise institutional problems, such as reimbursement mechanisms and staff workload. This project therefore proposes to build such mechanisms with AI, to strengthen the few professionals who remain in rural areas.</p>
+</div>
+</section>
+
+<!-- ============ 4 SOLUTION ============ -->
+<section id="solution" style="--sc:#087a76">
+<p class="sn">Section 4 · The solution</p>
+<h2>An AI-assisted rural healthcare support system</h2>
+<div class="split">
+<div class="col">
+<p>A state-funded, AI-based platform for clinical decision support, installed in rural primary healthcare facilities. It would help doctors and nurses make better-informed decisions, improve diagnostic capacity and serve more patients despite the shortage of staff. It supports health workers; it does not decide.</p>
+</div>
+<figure class="pic"><svg viewBox="0 0 360 240" role="img" aria-label="Illustration: a nurse in teal scrubs uses a tablet that shows guideline advice and a green check, while a patient waits across the desk.">
+<rect width="360" height="240" fill="#e6f5ec"/><rect x="20" y="24" width="38" height="38" rx="4" fill="#fff"/><path d="M34 30h10v8h8v10h-8v8H34v-8h-8V38h8z" fill="#d9531e" transform="translate(-1 0)"/>
+<circle cx="302" cy="94" r="16" fill="#f2c9a0"/><path d="M285 96 Q302 66 319 96 Q302 86 285 96Z" fill="#d9531e"/><rect x="278" y="112" width="48" height="64" rx="12" fill="#2a6fcf"/>
+<rect x="92" y="98" width="56" height="80" rx="12" fill="#087a76"/>
+<circle cx="120" cy="78" r="17" fill="#f2c9a0"/><path d="M104 70 L110 54 H130 L136 70Z" fill="#fff" stroke="#cfd8d6"/><path d="M118 56h4v4h4v4h-4v4h-4v-4h-4v-4h4z" fill="#d9531e" transform="translate(0 -1)"/>
+<path d="M146 116 L194 144" stroke="#087a76" stroke-width="15" stroke-linecap="round"/><circle cx="198" cy="146" r="7" fill="#f2c9a0"/>
+<rect x="24" y="172" width="312" height="14" rx="3" fill="#8a6a3a"/><rect x="40" y="186" width="10" height="42" fill="#8a6a3a"/><rect x="310" y="186" width="10" height="42" fill="#8a6a3a"/>
+<rect x="176" y="126" width="76" height="48" rx="6" fill="#14202e"/><rect x="181" y="131" width="66" height="38" fill="#dbeafb"/>
+<rect x="187" y="138" width="30" height="4" fill="#2a6fcf"/><rect x="187" y="147" width="46" height="4" fill="#9fb8d9"/><rect x="187" y="156" width="40" height="4" fill="#9fb8d9"/>
+<circle cx="236" cy="142" r="7" fill="#1f7f45"/><path d="M232 142 l3 3 l5 -6" stroke="#fff" stroke-width="2" fill="none"/>
+<path d="M200 112 q12 -12 24 0 M205 102 q7 -8 14 0" stroke="#087a76" stroke-width="3" fill="none" stroke-linecap="round" transform="translate(4 0)"/>
+</svg></figure>
+</div>
+<div class="panel art">
+<svg viewBox="0 0 900 180" role="img" aria-label="Diagram: a rural clinic with a doctor or nurse and a patient sends information to an AI decision-support tool, which gives advice back to the clinician, who makes the decision. The Ministry of Healthcare runs the system with technology providers.">
+<defs><marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#14202e"/></marker></defs>
+<g font-family="Source Sans 3,system-ui,sans-serif" text-anchor="middle">
+<rect x="20" y="24" width="250" height="104" rx="12" fill="#e6f5ec" stroke="#1f7f45" stroke-width="3"/>
+<text x="145" y="62" font-size="20" font-weight="700" fill="#14202e">Rural clinic</text><text x="145" y="90" font-size="14" fill="#14202e">doctor or nurse</text><text x="145" y="110" font-size="14" fill="#14202e">and patient</text>
+<rect x="325" y="24" width="250" height="104" rx="12" fill="#dbeafb" stroke="#2a6fcf" stroke-width="3"/>
+<text x="450" y="62" font-size="20" font-weight="700" fill="#14202e">AI decision support</text><text x="450" y="90" font-size="14" fill="#14202e">guidelines · image check</text><text x="450" y="110" font-size="14" fill="#14202e">paperwork</text>
+<rect x="630" y="24" width="250" height="104" rx="12" fill="#fff4d6" stroke="#a86400" stroke-width="3"/>
+<text x="755" y="62" font-size="20" font-weight="700" fill="#14202e">Clinician decides</text><text x="755" y="90" font-size="14" fill="#14202e">AI suggests,</text><text x="755" y="110" font-size="14" fill="#14202e">it never decides</text>
+<line x1="272" y1="76" x2="322" y2="76" stroke="#14202e" stroke-width="3" marker-end="url(#ar)"/>
+<line x1="577" y1="76" x2="627" y2="76" stroke="#14202e" stroke-width="3" marker-end="url(#ar)"/>
+<path d="M20 146 H880" stroke="#087a76" stroke-width="3" stroke-dasharray="3 7" stroke-linecap="round"/>
+<text x="450" y="170" font-size="15" font-weight="600" fill="#087a76">Run by the Ministry of Healthcare with technology providers</text>
+</g></svg>
+<p class="cap">The proposed flow. The system supports health workers; the clinician keeps the final decision.</p>
+</div>
+<div class="grid3">
+<div class="card"><span class="tag">What kind of system</span><h4>Decision support, not a doctor</h4><p>It recommends actions based on national medical guidelines, patient symptoms, medical histories and test results, and helps staff judge whether further tests or a referral to a specialist are needed.</p></div>
+<div class="card"><span class="tag">Doing what</span><h4>Three jobs</h4><p>Guideline advice; analysis of medical images that flags possible abnormalities for a clinician to review (a second reader, not a replacement for a specialist); and administrative work such as documentation and record management, which frees time for patients.</p></div>
+<div class="card"><span class="tag">Run by whom</span><h4>The Ministry, with vendors</h4><p>The Ministry of Healthcare would run it with medical centres across the country and technology providers. The Ministry of AI and Digital Development could be responsible for the technology side.</p></div>
+<div class="card"><span class="tag">Reaching whom</span><h4>Rural doctors and nurses</h4><p>Staff in hospitals, clinics and medical posts in rural areas that serve populations with limited access to specialists, and through them the rural patients.</p></div>
+</div>
+
+<h3>Two documented cases elsewhere</h3>
+<div class="grid3">
+<div class="card"><span class="tag">Case 1 · Ethiopia</span><h4>HEP Assist, an AI clinical advisor</h4>
+<p><b>What was built.</b> Ethiopia’s Ministry of Health and the non-profit Last Mile Health built an AI-powered clinical advisor, the Health Extension Program (HEP) Assist tool, so health extension workers can quickly reach trained professionals using AI assistance. It draws on more than 100 Ministry of Health training manuals and guidelines.</p>
+<p><b>What it achieved.</b> It is used in five regions of Ethiopia, where one worker serves around 2,500 patients. In the evaluation questionnaire, medical accuracy was about 83%, above the target<sup class="c"><a href="#r42">[42]</a></sup>.</p></div>
+<div class="card"><span class="tag">Case 2 · India</span><h4>AI chest X-ray screening for tuberculosis</h4>
+<p><b>What was built.</b> An AI tool reads chest X-rays and flags abnormalities related to tuberculosis. In Nagpur it ran in eight private laboratories alongside radiologists<sup class="c"><a href="#r17">[17]</a></sup>. A later prospective study applied AI screening to a high-risk tribal population in Chhattisgarh<sup class="c"><a href="#r18">[18]</a></sup>.</p>
+<p><b>What it achieved.</b> In Nagpur, 2,303 of 8,303 patients read by both a radiologist and the AI were flagged, and about 15.8% of the overall TB yield could be attributed to the AI<sup class="c"><a href="#r17">[17]</a></sup>. In Chhattisgarh, 44.63% of patients flagged by the AI were later confirmed to have TB, which is the share of flagged cases confirmed and not the tool’s sensitivity. The authors add that AI may detect people with asymptomatic disease who would otherwise be missed or diagnosed late<sup class="c"><a href="#r18">[18]</a></sup>.</p></div>
+</div>
+<div class="note"><b>Limits of the evidence.</b> The HEP Assist accuracy figure measures the tool’s answers in an evaluation, not patient outcomes. The Nagpur study took place in urban private laboratories, not villages. Both TB studies come with industry involvement in the tool being evaluated, so they show that such systems can work, not that this system would.</div>
+<div class="col"><p>Because such initiatives are already running, a decision-support system in Kazakhstan’s rural clinics may work too, if it is priced and governed honestly.</p></div>
+</section>
+
+<!-- ============ BILL ============ -->
+<section id="bill" style="--sc:#a86400">
+<p class="sn">Section 4 · The bill</p>
+<h2>What it would cost</h2>
+<div class="tools"><button type="button" class="chip" id="openall" aria-pressed="false">Open all evidence</button><span>Each line of the bill opens its evidence in place.</span></div>
+<div class="receipt" role="group" aria-label="Itemised bill for the rural care system">
+<p class="rc-title">RURAL CARE SYSTEM</p>
+<p class="rc-sub">ITEMISED BILL · PILOT IN 2–3 REGIONS</p>
+<div class="rc-cols" aria-hidden="true"><span>ITEM</span><span>COST RATING</span></div>
+<details class="rc-item lv1" id="c-env"><summary class="rc-row"><span class="nm"><b>1. ENVIRONMENTAL</b><small>about 26 MWh a year, on a grid already short</small></span><span class="rate"><span class="m" aria-hidden="true"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span><b>LOW</b><span class="sr"> (1 out of 5)</span></span><span class="chev" aria-hidden="true"></span></summary><div class="rc-body"><p class="rc-ev">EVIDENCE</p><div class="col">
+<p>Any single request uses little energy, but the electricity is not clean. Kazakhstan’s grid relies on coal: in 2025 coal-fired thermal plants produced 75% of electricity in the Unified Energy System<sup class="c"><a href="#r29">[29]</a></sup>, and renewables excluding large hydro supplied 7%<sup class="c"><a href="#r30">[30]</a></sup>. “Kazakhstan’s power plants generated a record 123.1 billion kilowatt-hours in 2025. Consumption, however, reached 124.6 billion kilowatt-hours. The country therefore used approximately 1.5 billion kilowatt-hours more than it produced”<sup class="c"><a href="#r31">[31]</a></sup>. The system would add demand. AI’s electricity use is expected to roughly double by 2030, yet data centres used 415 TWh in 2024, only 1.5% of electricity worldwide<sup class="c"><a href="#r32">[32]</a></sup>.</p>
+</div>
+<div class="calc">
+<b>Worked estimate</b> (Google reports that a median Gemini text prompt uses 0.24 Wh of energy, emits 0.03 g of CO₂ and consumes 0.26 mL of water<sup class="c"><a href="#r33">[33]</a></sup>)
+<ol>
+<li>Rural residents: 7,380,000. Assume the AI is used in 3 of their 6 primary-care visits a year, with about 5 requests per visit.</li>
+<li>Requests per year: 7,380,000 × 3 × 5 ≈ 110 million.</li>
+<li>Electricity: 110,000,000 × 0.24 Wh ≈ 26 MWh a year, which is about 0.00002% of the 123.1 TWh generated in 2025.</li>
+<li>Water: 110,000,000 × 0.26 mL ≈ 29,000 litres a year.</li>
+</ol>
+</div>
+<div class="panel" id="calcx">
+<h4>Try your own assumptions</h4>
+<div class="sliders">
+<div><label for="s1" class="lbl">AI-assisted visits per rural resident a year: <b id="v1">3</b> (of 6)</label><input type="range" id="s1" min="0" max="6" step="1" value="3"></div>
+<div><label for="s2" class="lbl">AI requests per visit: <b id="v2">5</b></label><input type="range" id="s2" min="1" max="20" step="1" value="5"></div>
+<div><label for="s3" class="lbl">Energy and water per request compared with Google’s median: <b id="v3">1</b>×</label><input type="range" id="s3" min="1" max="20" step="1" value="1"></div>
+</div>
+<div class="out" aria-live="polite">
+<div><b id="o1">110.7</b><span>million requests a year</span></div>
+<div><b id="o2">26.6</b><span>MWh of electricity a year</span></div>
+<div><b id="o3">28.8</b><span>thousand litres of water a year</span></div>
+<div><b id="o4">0.00002%</b><span>of the 123.1 TWh generated in 2025</span></div>
+</div>
+<p class="cap">Uses 7,380,000 rural residents, 0.24 Wh and 0.26 mL per median request<sup class="c"><a href="#r33">[33]</a></sup>. The first slider setting reproduces the estimate above (the text rounds 110.7 million to 110 million). Even at 20 times Google’s figure the energy stays tiny against national generation, but this counts requests only, not the servers that run all day.</p>
+</div>
+<div class="col">
+<p>Google’s figures describe highly optimised hyperscale data centres, so a typical facility could use several times more. The estimate also covers only the requests, not the servers that run continuously or the equipment needed in rural facilities, so the real footprint would be larger. Nationally the environmental cost is minor. It is not zero, and it falls on an energy system with no reserve capacity for cleaner generation.</p>
+</div></div></details><details class="rc-item lv4" id="c-eco"><summary class="rc-row"><span class="nm"><b>2. ECONOMIC</b><small>taxpayers pay, vendors profit</small></span><span class="rate"><span class="m" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span><b>HIGH</b><span class="sr"> (4 out of 5)</span></span><span class="chev" aria-hidden="true"></span></summary><div class="rc-body"><p class="rc-ev">EVIDENCE</p><div class="col">
+<p><b>What it costs.</b> Developing or licensing the software, adapting it to national clinical protocols in Kazakh and Russian, server capacity, equipment for rural facilities, connectivity, staff training, cybersecurity, independent auditing, and regular retraining and maintenance of the model.</p>
+<p>Some of this is already funded elsewhere. Of 6,256 villages in Kazakhstan, 2,606 already have optical infrastructure and another 3,039 will be covered under an investment agreement with JSC Kazakhtelecom<sup class="c"><a href="#r34">[34]</a></sup>. Until that is finished, the system must run in autonomous mode in unconnected villages, which raises costs.</p>
+<p><b>Who pays and who profits.</b> The state budget and the Compulsory Social Health Insurance fund would pay, so taxpayers pay. Who profits is less comfortable. Kazakhstan already uses private AI products in healthcare: ALIMA, an AI medical assistant that processes complaints, records and images to suggest diagnoses, exams and treatment plans, operates in over 700 clinics, and WDsoft assists early detection of cancer and pneumonia in 190 facilities in 10 regions<sup class="c"><a href="#r35">[35]</a></sup>. A national system would most likely be built by contracting such vendors, so the winners would be software companies and the operators of state data centres. Rural patients benefit only if the system works in their villages.</p>
+<p><b>Opportunity cost.</b> The same money could expand social support for rural physicians, which grew from 263 recipients in 2023 to 1,760 in 2025<sup class="c"><a href="#r21">[21]</a></sup>. Every tenge spent on software is not spent on housing subsidies or relocation payments, the payments that address why graduates do not move to villages.</p>
+</div></div></details><details class="rc-item lv4" id="c-lab"><summary class="rc-row"><span class="nm"><b>3. LABOUR</b><small>new work, hidden labelling, replacement risk</small></span><span class="rate"><span class="m" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span><b>HIGH</b><span class="sr"> (4 out of 5)</span></span><span class="chev" aria-hidden="true"></span></summary><div class="rc-body"><p class="rc-ev">EVIDENCE</p><div class="col">
+<p>Health workers would get less paperwork and help with diagnostic results, but would take on new work: entering data, checking AI recommendations and learning the system. Some administrative roles could become unnecessary. Radiologists in cities may be asked to review AI-flagged images remotely, work for which they are not paid.</p>
+<p>Government could also use AI as a pretext to leave more than 3,000 rural vacancies unfilled<sup class="c"><a href="#r23">[23]</a></sup>. A tool meant to support staff would then quietly replace them, and the system would make the staffing shortage permanent instead of easing it.</p>
+<p><b>Hidden labour.</b> Training and testing medical AI needs labelled X-rays, records and symptom descriptions. If doctors in Kazakhstan do the labelling, it takes time from patients. If it is outsourced, it joins a global supply chain that is often exploitative: in Kenya, data workers receive extremely low pay and often face unpaid wages and unresolved disputes<sup class="c"><a href="#r12">[12]</a></sup>.</p>
+</div></div></details><details class="rc-item lv5" id="c-gov"><summary class="rc-row"><span class="nm"><b>4. GOVERNANCE</b><small>high-risk AI, data localisation, breach record</small></span><span class="rate"><span class="m" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><b>HIGH</b><span class="sr"> (5 out of 5)</span></span><span class="chev" aria-hidden="true"></span></summary><div class="rc-body"><p class="rc-ev">EVIDENCE</p><div class="col">
+<p>The legal framework now exists. On 17 November 2025 the President signed Law No. 230-VIII “On Artificial Intelligence”, which sets principles of security, transparency and accountability and classifies systems by risk. High-risk systems are those whose malfunction or cessation could cause a social or man-made emergency or significant negative consequences for users<sup class="c"><a href="#r36">[36]</a></sup>. A system that influences diagnoses and referrals to specialists should be classed as high-risk. The law also distinguishes levels of autonomy: at a low level a human makes every final decision; at an intermediate level the system decides but a human can adjust or overturn it<sup class="c"><a href="#r37">[37]</a></sup>. This proposal must stay at the low level. That fits the law’s principle of the primacy of the human being, their rights, freedoms and well-being<sup class="c"><a href="#r38">[38]</a></sup>, and WHO’s 2021 guidance on the ethics and governance of AI for health, which puts protecting human autonomy and ensuring accountability first<sup class="c"><a href="#r39">[39]</a></sup>.</p>
+<p><b>Data localisation.</b> Under Article 12 of the Personal Data Law, personal data must be stored in a database located in Kazakhstan<sup class="c"><a href="#r40">[40]</a></sup>. That rules out sending patient records to foreign cloud AI services and in practice requires state-owned infrastructure. Localisation protects data from foreign companies but concentrates it in the state. The same ministry would develop, host and regulate the system, a conflict of interest unless an independent body oversees it.</p>
+<p><b>Surveillance and misuse.</b> Health records linked to individual identification numbers (IIN) are valuable to insurers, employers and law enforcement, and Kazakhstan’s record on data security is weak. In summer 2025 the government confirmed the largest data breach in its history, exposing the personal information of over 16 million people, more than three-quarters of the population<sup class="c"><a href="#r41">[41]</a></sup>. A national database of rural diagnoses would be an attractive new target.</p>
+</div></div></details><details class="rc-item lv4" id="c-eth"><summary class="rc-row"><span class="nm"><b>5. DATA ETHICS</b><small>consent, bias, errors, function creep</small></span><span class="rate"><span class="m" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span><b>HIGH</b><span class="sr"> (4 out of 5)</span></span><span class="chev" aria-hidden="true"></span></summary><div class="rc-body"><p class="rc-ev">EVIDENCE</p><div class="col">
+<p>The system needs data on symptoms, medical histories, test results and medical images, and training and evaluating it needs large historical datasets of Kazakhstani patients. Under personal data law, using such information requires informed consent. In a rural clinic that is harder than it looks: many patients are elderly, some lack digital literacy, others prefer Kazakh while documentation is kept in Russian, and a patient who travelled 40–70 km to see the only specialist in the district has no practical chance to decline.</p>
+<h4>What could go wrong</h4>
+<p><b>Bias.</b> Most digitised medical data comes from large urban hospitals in Almaty and Astana, so accuracy may be lower for rural residents. Official statistics hold almost nothing on elderly people or people with disabilities, the groups that most need care and about whom the model knows least.</p>
+<p><b>Errors.</b> HEP Assist reached about 83% accuracy in its evaluation, which was judged a success<sup class="c"><a href="#r42">[42]</a></sup>. In a rural setting with no other specialist, the remaining answers that are wrong may go uncorrected.</p>
+<p><b>Blind trust and function creep.</b> An overworked staff member might accept an AI recommendation without checking it. If harm follows, it is unclear who is responsible: the employee, the developer or the ministry. “Function creep” means data collected for care is later used to check insurance claims, assist law enforcement or train commercial models, without patients’ consent.</p>
+</div></div></details>
+<div class="rc-total"><span>TOTAL</span><b>1 LOW · 4 HIGH</b></div>
+<p class="rc-line2">PAID BY: taxpayers (state budget and the Compulsory Social Health Insurance fund)</p>
+<p class="rc-line2">PROFITS: software vendors and state data-centre operators</p>
+<a class="rc-verdict" href="#verdict">VERDICT: PROCEED ONLY IF 6 CONDITIONS HOLD &rarr;</a>
+<p class="rc-note">1 segment = low cost, 5 = high. Ratings are the author’s judgement from the evidence in each line. Tap a line to open its evidence.</p>
+<div class="rc-bar" aria-hidden="true"></div>
+<p class="rc-thanks">KEEP THIS RECEIPT</p>
+</div>
+
+</section>
+
+<!-- ============ VERDICT ============ -->
+<section id="verdict" style="--sc:#1f7f45">
+<p class="sn">Section 4 · Verdict</p>
+<h2>Yes, but only under strict conditions</h2>
+<div class="verdict">
+<p class="big">The environmental cost is small. The economic, labour and governance costs are not.</p>
+<p>The main danger is that AI becomes a cheaper substitute for recruiting doctors. If the system is used to justify leaving rural posts empty, it will make the access problem worse, and the answer should be no. Kazakhstan should proceed only if all of the following hold.</p>
+<p class="hint">Tick each condition you think can be guaranteed.</p>
+<ol class="cond" id="cond">
+<li><span><b>Funding stays separate.</b> AI spending does not come out of the social-support budget, and rural staffing levels are not reduced because the system exists.</span></li>
+<li><span><b>High risk, low autonomy.</b> The system is registered as high-risk under Law No. 230-VIII and kept at low autonomy. The clinician decides, and patients are told when AI is used.</span></li>
+<li><span><b>Data is minimised and kept under local control.</b> Data is not reused for training or any other purpose without separate consent.</span></li>
+<li><span><b>Independent oversight.</b> A body other than the ministry that runs the system audits it.</span></li>
+<li><span><b>Rural staff are paid for the new work.</b> This covers data entry, correcting the AI and training time, and any labelling is done under fair contracts.</span></li>
+<li><span><b>Evaluate before building.</b> Start with a pilot in two or three regions, for example Turkistan, which has a large rural population, and Aktobe, which has a large urban–rural gap.</span></li>
+</ol>
+<div id="vres" class="vres" aria-live="polite"></div>
+<p>If these conditions cannot be guaranteed, the money is better spent on housing, salaries and transport for rural medical workers. That approach has clearer evidence behind it.</p>
+</div>
+</section>
+
+<!-- ============ TRANSPARENCY ============ -->
+<section id="transparency" style="--sc:#087a76">
+<p class="sn">AI transparency statement</p>
+<h2>How AI was used in this project</h2>
+<div class="col">
+<p>I used Claude (Anthropic) for this assignment. I chose the topic, the research question and the proposal, and I am responsible for every claim and number on this page. The full record is in my exported AI Process Log.</p>
+</div>
+<div class="grid3">
+<div class="card" style="--sc:#087a76"><span class="tag">What Claude contributed</span>
+<p>Claude made the figures in this work and did the calculation of the environmental cost. It helped with grouping articles to write the third section. It also searched for and read sources, calculated shares and growth figures from the workforce tables, spotted errors in my drafts, and assembled this website and reference list.</p></div>
+<div class="card" style="--sc:#2a6fcf"><span class="tag">What I contributed</span>
+<p>I decided to write about rural healthcare access instead of the topic Claude suggested. I wrote the research question, the proposal for a state-run decision-support system and its case studies. I searched for articles and read them. I supplied the data tables and figures in Sections 1 and 2 and checked the key figures against their sources.</p></div>
+<div class="card" style="--sc:#1f7f45"><span class="tag">What I accepted</span>
+<p>I accepted the cases of the fourth section: the Ethiopia HEP Assist tool and the India tuberculosis X-ray screening. I also accepted Claude’s figures and calculations.</p></div>
+<div class="card" style="--sc:#c4481a"><span class="tag">What I rejected, and why</span>
+<p>I rejected Claude’s suggested topic (pollution in Almaty) because I wanted to write about rural healthcare access. I did not use some references that Claude offered me because they could not be opened, which means I could not verify them. I rejected Claude’s suggestion to differentiate between Russian- and Kazakh-speaking patients in the independent oversight condition, since information about all individuals should be kept in one place.</p></div>
+</div>
+</section>
+
+<!-- ============ REFERENCES ============ -->
+<section id="references" style="--sc:#4a6870">
+<p class="sn">References</p>
+<h2>Sources</h2>
+<p class="col">A number in square brackets in the text, such as [19], links to the matching source below.</p>
+
+<details class="fold" id="refsfold"><summary>Show all 42 references</summary>
+<ol class="refs">
+<li id="r1"><b>[1]</b><span>Jobalayeva B, Khismetova Z, Glushkova N, et al. The impact of incentive scheme on rural healthcare workforce availability: a case study of Kazakhstan. <i>Human Resources for Health</i>. 2024;22:23. <a href="https://doi.org/10.1186/s12960-024-00905-0">https://doi.org/10.1186/s12960-024-00905-0</a></span></li>
+<li id="r2"><b>[2]</b><span>Jobalayeva B, Glushkova N, Khismetova Z, et al. Past, current status, and future trends of the rural healthcare network in the Republic of Kazakhstan. <i>Scientific Reports</i>. 2025;15:26913. <a href="https://doi.org/10.1038/s41598-025-11432-w">https://doi.org/10.1038/s41598-025-11432-w</a></span></li>
+<li id="r3"><b>[3]</b><span>Malbekova D, Demushkan O, Kassymova A, et al. Social support of young medical personnel in the conditions of sustainable development of rural areas of Kazakhstan. <i>BIO Web of Conferences</i>. 2023;65:05012. <a href="https://doi.org/10.1051/bioconf/20236505012">https://doi.org/10.1051/bioconf/20236505012</a></span></li>
+<li id="r4"><b>[4]</b><span>Baimuratova MA, Turzhanova BA, Zakiolda A, et al. Accessibility and quality of medical care as indicators of health system sustainability: a literature review. <i>Public Health (Kazakhstan)</i>. 2026;(1):76–89. <a href="https://doi.org/10.24412/1609-8692-2026-1-76-89">https://doi.org/10.24412/1609-8692-2026-1-76-89</a></span></li>
+<li id="r5"><b>[5]</b><span>Haruna UA, Oladunni AA, Abdulkadir AK, et al. Towards attaining universal health coverage in Kazakhstan: challenges and important next steps. <i>Health Promotion Perspectives</i>. 2025;15(1):3–8. <a href="https://doi.org/10.34172/hpp.025.43529">https://doi.org/10.34172/hpp.025.43529</a></span></li>
+<li id="r6"><b>[6]</b><span>Shayakhmetov, S., Kurakbaev, K. K., Toguzbaeva, K. K., &amp; Ismailova, A. A. (2020). Risk assessment and management of rural health in Kazakhstan. <i>Vestnik Kazakhskogo natsional’nogo meditsinskogo universiteta</i> [Вестник Казахского национального медицинского университета], (4), 398–402.</span></li>
+<li id="r7"><b>[7]</b><span>Strasser R, Kam SM, Regalado SM. Rural health care access and policy in developing countries. <i>Annual Review of Public Health</i>. 2016;37:395–412. <a href="https://doi.org/10.1146/annurev-publhealth-032315-021507">https://doi.org/10.1146/annurev-publhealth-032315-021507</a></span></li>
+<li id="r8"><b>[8]</b><span>Gizaw Z, Astale T, Kassie GM. What improves access to primary healthcare services in rural communities? A systematic review. <i>BMC Primary Care</i>. 2022;23:313. <a href="https://doi.org/10.1186/s12875-022-01919-0">https://doi.org/10.1186/s12875-022-01919-0</a></span></li>
+<li id="r9"><b>[9]</b><span>World Health Organization. <i>Increasing access to health workers in remote and rural areas through improved retention: global policy recommendations</i>. Geneva: WHO; 2010.</span></li>
+<li id="r10"><b>[10]</b><span>Fonken P, Bolotskikh I, Pirnazarova GF, Sulaimanova G, Talapbek kyzy S, Toktogulova A. Keys to expanding the rural healthcare workforce in Kyrgyzstan. <i>Frontiers in Public Health</i>. 2020;8:447. <a href="https://doi.org/10.3389/fpubh.2020.00447">https://doi.org/10.3389/fpubh.2020.00447</a></span></li>
+<li id="r11"><b>[11]</b><span>Shaltynov A, Abenova M, Baibussinova A, et al. Inequality in the distribution and utilization of healthcare resources in Kazakhstan (2002–2023): a spatiotemporal analysis. <i>International Journal of Environmental Research and Public Health</i>. 2025;22:1762. <a href="https://doi.org/10.3390/ijerph22111762">https://doi.org/10.3390/ijerph22111762</a></span></li>
+<li id="r12"><b>[12]</b><span>Computer Weekly. Kenyan AI workers form Data Labelers Association. 2025. <a href="https://www.computerweekly.com/news/366619321/Kenyan-AI-workers-form-Data-Labelers-Association">https://www.computerweekly.com/news/366619321/Kenyan-AI-workers-form-Data-Labelers-Association</a></span></li>
+<li id="r13"><b>[13]</b><span>Spankulova L, Chulanova Z, Konyrbay A. Availability and quality of medical services in Kazakhstan: the urban-rural context. <i>Eurasian Journal of Economic and Business Studies</i>. 2024;68(2):5–19. <a href="https://doi.org/10.47703/ejebs.v68i2.376">https://doi.org/10.47703/ejebs.v68i2.376</a></span></li>
+<li id="r14"><b>[14]</b><span>Faizullina K, Kausova G, Kalmataeva Z, Nurbakyt A, Buzdaeva S. Career intentions and dropout causes among medical students in Kazakhstan. <i>Medicina (Kaunas)</i>. 2013;49(6):284–90.</span></li>
+<li id="r15"><b>[15]</b><span>Rechel B, Sydykova A, Moldoisaeva S, et al. Primary care reforms in Central Asia: on the path to universal health coverage? <i>Health Policy OPEN</i>. 2023;5:100110. <a href="https://doi.org/10.1016/j.hpopen.2023.100110">https://doi.org/10.1016/j.hpopen.2023.100110</a></span></li>
+<li id="r16"><b>[16]</b><span>Mseke EP, Jessup B, Barnett T. Impact of distance and/or travel time on healthcare service access in rural and remote areas: a scoping review. <i>Journal of Transport &amp; Health</i>. 2024;37:101819. <a href="https://doi.org/10.1016/j.jth.2024.101819">https://doi.org/10.1016/j.jth.2024.101819</a></span></li>
+<li id="r17"><b>[17]</b><span>Vijayan S, Jondhale V, Pande T, Khan A, Brouwer M, Hegde A, et al. Implementing a chest X-ray artificial intelligence tool to enhance tuberculosis screening in India: lessons learned. <i>PLOS Digital Health</i>. 2023;2(12):e0000404. <a href="https://doi.org/10.1371/journal.pdig.0000404">https://doi.org/10.1371/journal.pdig.0000404</a></span></li>
+<li id="r18"><b>[18]</b><span>Gupta A, Nair AM, Ekka S, Gahwai D, Sharma N, Raza Khan F, et al. Evaluating the usefulness of artificial intelligence-based chest X-ray screening in improving tuberculosis detection among the high-risk tribal population of Chhattisgarh, India: a prospective multi-centre study. <i>Open Forum Infectious Diseases</i>. 2026;13(1):ofaf780. Oxford University Press.</span></li>
+
+<li id="r19"><b>[19]</b><span>Demushkan O. (2024). Анализ кадровой обеспеченности отрасли здравоохранения Республики Казахстан [Analysis of healthcare workforce availability in the Republic of Kazakhstan]. National Scientific Center for Healthcare Development named after Salidat Kairbekova. <a href="https://ksph.edu.kz/wp-content/uploads/2024/05/%D0%94%D0%BE%D0%BA%D0%BB%D0%B0%D0%B4-%D0%92%D0%A8%D0%9E%D0%97-%D0%90%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7-%D0%BA%D0%B0%D0%B4%D1%80%D0%BE%D0%B2%D0%BE%D0%B9-%D0%BE%D0%B1%D0%B5%D1%81%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8.pdf">ksph.edu.kz (PDF)</a></span></li>
+<li id="r20"><b>[20]</b><span>Bureau of National Statistics of the Agency for Strategic Planning and Reforms of the Republic of Kazakhstan. (n.d.). Official website. <a href="https://stat.gov.kz/ru/">https://stat.gov.kz/ru/</a></span></li>
+<li id="r21"><b>[21]</b><span>Ministry of Healthcare of the Republic of Kazakhstan. (2026, June 17). SUR 2.0: The Ministry of Healthcare gives one month to update healthcare workforce data. <a href="https://www.gov.kz/org/dsm/press/news/details/1242801?lang=ru">https://www.gov.kz/org/dsm/press/news/details/1242801?lang=ru</a></span></li>
+<li id="r22"><b>[22]</b><span>24KZ. (2026, August 6). How many healthcare workers are there in Kazakhstan. <a href="https://24.kz/ru/news/zdravookhranenie/784161-skolko-medrabotnikov-v-kazakhstane">https://24.kz/ru/news/zdravookhranenie/784161-skolko-medrabotnikov-v-kazakhstane</a></span></li>
+<li id="r23"><b>[23]</b><span>Arbat Media. (2025, October 25). Healthcare in rural Kazakhstan: The struggle for accessibility, personnel, and technology. <a href="https://arbatmedia.kz/article/medicina-v-selax-kazaxstana-borba-za-dostupnost-kadry-i-texnologii-6695">https://arbatmedia.kz/article/medicina-v-selax-kazaxstana-borba-za-dostupnost-kadry-i-texnologii-6695</a></span></li>
+<li id="r24"><b>[24]</b><span>Ministry of Healthcare of the Republic of Kazakhstan. (2025). 473 healthcare facilities built in Kazakhstan’s villages. <a href="https://www.gov.kz/org/dsm/press/news/details/1016808?lang=ru">https://www.gov.kz/org/dsm/press/news/details/1016808?lang=ru</a></span></li>
+<li id="r25"><b>[25]</b><span>Ministry of Healthcare of the Republic of Kazakhstan, National Research Center for Health Development. <i>Statistical compendium 2024–2025</i> (Table 20, p. 215; rural facilities, p. 196). <a href="https://nrchd.kz/storage/documents/%D0%9C%D0%B5%D0%B4%D0%B8%D1%86%D0%B8%D0%BD%D1%81%D0%BA%D0%B0%D1%8F%20%D1%81%D1%82%D0%B0%D1%82%D0%B8%D1%81%D1%82%D0%B8%D0%BA%D0%B0/%D0%90%D0%BD%D0%B0%D0%BB%D0%B8%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5%20%D0%BC%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%B0%D0%BB%D1%8B/%D0%A1%D1%82%D0%B0%D1%82%20%D1%81%D0%B1%D0%BE%D1%80%D0%BD%D0%B8%D0%BA%202024-2025%D0%B3%D0%B3..pdf">nrchd.kz (PDF)</a></span></li>
+<li id="r26"><b>[26]</b><span>Bureau of National Statistics. Demography publication on births and deaths, 2020–2025. <a href="https://stat.gov.kz/ru/industries/social-statistics/demography/publications/281538/">https://stat.gov.kz/ru/industries/social-statistics/demography/publications/281538/</a></span></li>
+<li id="r27"><b>[27]</b><span>Bureau of National Statistics. Demography publication on rural population by region. <a href="https://stat.gov.kz/ru/industries/social-statistics/demography/publications/281166/">https://stat.gov.kz/ru/industries/social-statistics/demography/publications/281166/</a></span></li>
+<li id="r28"><b>[28]</b><span>World Health Organization. Health workforce, background paper for the Global Conference on Primary Health Care (44.5 health workers per 10,000 people, p. 6). <a href="https://www.who.int/docs/default-source/primary-health-care-conference/workforce.pdf">https://www.who.int/docs/default-source/primary-health-care-conference/workforce.pdf</a></span></li>
+
+<li id="r29"><b>[29]</b><span>Samruk-Energy. Annual report 2025, market review. <a href="https://ar2025.samruk-energy.kz/en/index/market-review.html">https://ar2025.samruk-energy.kz/en/index/market-review.html</a></span></li>
+<li id="r30"><b>[30]</b><span>Bureau of National Statistics. Energy statistics publication. <a href="https://stat.gov.kz/en/industries/business-statistics/stat-energy/publications/509810/">https://stat.gov.kz/en/industries/business-statistics/stat-energy/publications/509810/</a></span></li>
+<li id="r31"><b>[31]</b><span>Orda. (2026). Kazakhstan’s power deficit complicates its AI ambitions. <a href="https://en.orda.kz/kazakhstans-power-deficit-complicates-its-ai-ambitions-10990/">https://en.orda.kz/kazakhstans-power-deficit-complicates-its-ai-ambitions-10990/</a></span></li>
+<li id="r32">
+<b>[32]</b><span>International Energy Agency. (2025). <i>Energy and AI</i>, executive summary. <a href="https://www.iea.org/reports/energy-and-ai/executive-summary">https://www.iea.org/reports/energy-and-ai/executive-summary</a></span></li>
+<li id="r33"><b>[33]</b><span>DatacenterDynamics. Google: median Gemini prompt uses 0.24 watt-hours of power and consumes 0.26 ml of water. <a href="https://www.datacenterdynamics.com/en/news/google-median-gemini-prompt-uses-024-watt-hours-of-power-and-consumes-026ml-of-water/">https://www.datacenterdynamics.com/en/news/google-median-gemini-prompt-uses-024-watt-hours-of-power-and-consumes-026ml-of-water/</a></span></li>
+<li id="r34"><b>[34]</b><span>El.kz. Kazakhstan to allocate 84 bln tenge for internet in villages. <a href="https://el.kz/en/kazakhstan-to-allocate-84-bln-tenge-for-internet-in-villages_400028054">https://el.kz/en/kazakhstan-to-allocate-84-bln-tenge-for-internet-in-villages_400028054</a></span></li>
+<li id="r35"><b>[35]</b><span>The Times of Central Asia. Kazakhstan to expand use of AI for early detection of strokes and cancer (ALIMA, WDsoft). <a href="https://timesca.com/kazakhstan-to-expand-use-of-ai-for-early-detection-of-strokes-and-cancer/">https://timesca.com/kazakhstan-to-expand-use-of-ai-for-early-detection-of-strokes-and-cancer/</a></span></li>
+<li id="r36"><b>[36]</b><span>Chambers and Partners. Current issues in artificial intelligence regulation in Kazakhstan. <a href="https://chambers.com/articles/current-issues-in-artificial-intelligence-regulation-in-kazakhstan">https://chambers.com/articles/current-issues-in-artificial-intelligence-regulation-in-kazakhstan</a></span></li>
+<li id="r37"><b>[37]</b><span>Republic of Kazakhstan. Law No. 230-VIII “On Artificial Intelligence” (Adilet legal database). <a href="https://old.adilet.zan.kz/eng/docs/Z2500000230">https://old.adilet.zan.kz/eng/docs/Z2500000230</a></span></li>
+<li id="r38"><b>[38]</b><span>Tengrinews. New law comes into force in Kazakhstan. <a href="https://en.tengrinews.kz/kazakhstan_news/new-law-comes-into-force-in-kazakhstan-270729">https://en.tengrinews.kz/kazakhstan_news/new-law-comes-into-force-in-kazakhstan-270729</a></span></li>
+<li id="r39"><b>[39]</b><span>World Health Organization. (2021, 28 June). WHO issues first global report on AI in health and six guiding principles for its design and use. <a href="https://www.who.int/news/item/28-06-2021-who-issues-first-global-report-on-ai-in-health-and-six-guiding-principles-for-its-design-and-use">https://www.who.int/news/item/28-06-2021-who-issues-first-global-report-on-ai-in-health-and-six-guiding-principles-for-its-design-and-use</a></span></li>
+<li id="r40"><b>[40]</b><span>Government of Kazakhstan, Aqmola region. Law on Personal Data and its Protection, Article 12. <a href="https://www.gov.kz/org/aqmola/documents/details/176880?lang=en">https://www.gov.kz/org/aqmola/documents/details/176880?lang=en</a></span></li>
+<li id="r41"><b>[41]</b><span>The Times of Central Asia. Kazakhstan considers criminal liability for mass leaks of personal data. <a href="https://timesca.com/kazakhstan-considere-criminal-liability-for-mass-leaks-of-personal-data/">https://timesca.com/kazakhstan-considere-criminal-liability-for-mass-leaks-of-personal-data/</a></span></li>
+<li id="r42"><b>[42]</b><span>IDinsight. Building an AI-powered clinical advisor to strengthen frontline healthcare in Ethiopia (HEP Assist). <a href="https://www.idinsight.org/project/building-an-ai-powered-clinical-advisor-to-strengthen-frontline-healthcare-in-ethiopia/">https://www.idinsight.org/project/building-an-ai-powered-clinical-advisor-to-strengthen-frontline-healthcare-in-ethiopia/</a></span></li>
+</ol>
+</details>
+</section>
+
+
+
+</main>
+<footer><div class="wrap">PLS519 final project · Rural healthcare access in Kazakhstan · November 2026</div></footer>
+
+<script>
+(function(){
+function $(i){return document.getElementById(i)}
+// stepper: progress + current step
+var ids=['problem','data','research','solution','bill','verdict','transparency','references'];
+var stl=[].slice.call(document.querySelectorAll('#steps .st'));
+function onScroll(){
+  var y=window.scrollY+130,tops=ids.map(function(k){return $(k).offsetTop}),cur=-1,i;
+  for(i=0;i<ids.length;i++){if(tops[i]<=y)cur=i}
+  var pr=0;
+  if(cur>=0){
+    if(cur>=ids.length-1){pr=1}
+    else{var f=Math.min(1,Math.max(0,(y-tops[cur])/(tops[cur+1]-tops[cur])));pr=(cur+f)/(ids.length-1)}
+  }
+  $('stfill').style.width=(pr*100)+'%';
+  stl.forEach(function(a,k){a.className='st'+(k<cur?' done':'')+(k===cur?' cur':'')});
+}
+window.addEventListener('scroll',onScroll,{passive:true});window.addEventListener('resize',onScroll);onScroll();
+
+// physicians chart (values from Ministry compendium Table 20)
+var D=[['Kyzylorda',24.9,47.1],['Turkistan',22.7,53.5],['Almaty region',22.3,38.8],['Abay',22.3,60.7],['Zhambyl',21.5,39.8],['Aktobe',20.2,56.0],['East Kazakhstan',19.4,50.8],['West Kazakhstan',19.3,43.9],['Pavlodar',18.6,53.6],['Karaganda',18.4,57.3],['Mangystau',17.6,49.8],['Akmola',15.2,35.1],['Atyrau',13.8,47.4],['Kostanay',13.7,39.3],['Ulytau',13.6,37.8],['North Kazakhstan',12.7,52.8],['Zhetisu',11.0,46.3]];
+var sortMode='rural',selName=null;
+function drawPhys(){
+  var rows=D.slice();
+  if(sortMode==='rural')rows.sort(function(a,b){return b[1]-a[1]});
+  if(sortMode==='gap')rows.sort(function(a,b){return b[2]/b[1]-a[2]/a[1]});
+  if(sortMode==='az')rows.sort(function(a,b){return a[0]<b[0]?-1:1});
+  var box=$('phys');box.innerHTML='';
+  rows.forEach(function(r){
+    var b=document.createElement('button');b.type='button';b.className='prow'+(r[0]===selName?' sel':'');
+    b.innerHTML='<span class="lab">'+r[0]+'</span><span class="t"><span class="f u" style="width:'+(r[2]/70*88)+'%"><i>'+r[2].toFixed(1)+'</i></span><span class="f r" style="width:'+(r[1]/70*88)+'%"><i>'+r[1].toFixed(1)+'</i></span></span>';
+    function show(){selName=r[0];$('physinfo').textContent=r[0]+': '+r[1].toFixed(1)+' physicians per 10,000 rural residents against '+r[2].toFixed(1)+' in cities. City residents have '+(r[2]/r[1]).toFixed(1)+' times as many.';[].forEach.call(box.children,function(c){c.classList.remove('sel')});b.classList.add('sel')}
+    b.addEventListener('click',show);b.addEventListener('mouseenter',show);b.addEventListener('focus',show);
+    box.appendChild(b);
+  });
+}
+[].forEach.call(document.querySelectorAll('#fig4 .chip'),function(c){c.addEventListener('click',function(){
+  sortMode=c.getAttribute('data-sort');
+  [].forEach.call(document.querySelectorAll('#fig4 .chip'),function(x){x.classList.toggle('on',x===c);x.setAttribute('aria-pressed',x===c?'true':'false')});drawPhys()})});
+drawPhys();
+
+
+// facilities chart (own calculation from Ministry counts and Bureau of National Statistics rural population)
+var F=[['North Kazakhstan',1.9,16.2,18.1],['Akmola',2.6,10.8,13.3],['Kostanay',1.2,11.7,13.0],['Aktobe',4.0,8.5,12.5],['Pavlodar',2.6,9.8,12.4],['Karaganda',2.8,9.1,11.9],['East Kazakhstan',3.0,8.7,11.8],['West Kazakhstan',2.3,8.8,11.0],['Abay',4.0,6.0,10.1],['Ulytau',1.5,6.1,7.7],['Jetysu',2.4,4.7,7.1],['Jambyl',1.9,3.2,5.1],['Kyzylorda',2.4,2.5,4.8],['Turkistan',1.4,2.8,4.3],['Atyrau',1.8,1.3,3.1],['Almaty region',1.4,1.2,2.6],['Mangystau',null,null,1.2]];
+var fbox=$('fac');
+F.forEach(function(r){
+  var b=document.createElement('button');b.type='button';b.className='prow';
+  var bar=r[1]===null?'<span class="seg n" style="width:'+(r[3]/20*88)+'%"></span>':'<span class="seg c" style="width:'+(r[1]/20*88)+'%"></span><span class="seg p" style="width:'+(r[2]/20*88)+'%"></span>';
+  b.innerHTML='<span class="lab">'+r[0]+'</span><span class="t"><span class="sb">'+bar+'<i>'+r[3].toFixed(1)+'</i></span></span>';
+  function show(){
+    $('facinfo').textContent=r[1]===null?(r[0]+': '+r[3].toFixed(1)+' facilities per 10,000 rural inhabitants in total. The table does not give the split.'):(r[0]+': '+r[1].toFixed(1)+' clinics + '+r[2].toFixed(1)+' feldsher-midwife stations and posts = '+r[3].toFixed(1)+' per 10,000 rural inhabitants.');
+    [].forEach.call(fbox.children,function(c){c.classList.remove('sel')});b.classList.add('sel');
+  }
+  b.addEventListener('click',show);b.addEventListener('mouseenter',show);b.addEventListener('focus',show);
+  fbox.appendChild(b);
+});
+
+// year explorer (Table 1)
+var dr=[12736,13365,13395,13480,13716],du=[61310,63078,64832,65781,67569],mr=[51298,54095,54371,55504,54987],mu=[128539,131662,134429,135798,135657];
+function fmt(n){return n.toLocaleString('en-US')}
+function drawYear(){
+  var k=+$('yr').value-2019;$('yrv').textContent=2019+k;
+  var sd=dr[k]/(dr[k]+du[k])*100,sm=mr[k]/(mr[k]+mu[k])*100;
+  $('yrout').innerHTML='<div class="m"><b>'+sd.toFixed(1)+'%</b><span>of doctors work in rural areas ('+fmt(dr[k])+' of '+fmt(dr[k]+du[k])+')</span><div class="meter"><i style="width:'+sd+'%"></i></div></div><div class="m"><b>'+sm.toFixed(1)+'%</b><span>of mid-level staff work in rural areas ('+fmt(mr[k])+' of '+fmt(mr[k]+mu[k])+')</span><div class="meter"><i style="width:'+sm+'%"></i></div></div>';
+}
+$('yr').addEventListener('input',drawYear);drawYear();
+
+// environmental calculator
+function drawCalc(){
+  var a=+$('s1').value,b=+$('s2').value,m=+$('s3').value;
+  $('v1').textContent=a;$('v2').textContent=b;$('v3').textContent=m;
+  var req=7380000*a*b,mwh=req*0.24*m/1e6,lit=req*0.26*m/1000,pct=mwh/123.1e6*100;
+  $('o1').textContent=(req/1e6).toFixed(1);
+  $('o2').textContent=mwh<10?mwh.toFixed(1):Math.round(mwh).toLocaleString('en-US');
+  $('o3').textContent=(lit/1000)<10?(lit/1000).toFixed(1):Math.round(lit/1000).toLocaleString('en-US');
+  $('o4').textContent=(pct===0?'0':(pct<0.001?pct.toFixed(5):pct.toFixed(4)))+'%';
+}
+['s1','s2','s3'].forEach(function(i){$(i).addEventListener('input',drawCalc)});drawCalc();
+
+
+// receipt: open lines from links, open all
+var rcs=[].slice.call(document.querySelectorAll('.rc-item'));
+function openHash(){var h=location.hash.slice(1);rcs.forEach(function(d){if(d.id===h){d.open=true;setTimeout(function(){d.scrollIntoView()},50)}})}
+window.addEventListener('hashchange',openHash);openHash();
+var oa=$('openall');
+oa.addEventListener('click',function(){
+  var on=oa.getAttribute('aria-pressed')!=='true';
+  rcs.forEach(function(d){d.open=on});
+  oa.setAttribute('aria-pressed',on?'true':'false');oa.className='chip'+(on?' on':'');oa.textContent=on?'Close all evidence':'Open all evidence';
+});
+
+
+// open the references fold when a citation is used
+var rf=$('refsfold');
+function openRef(){if(/^#r\d+$/.test(location.hash)){rf.open=true;var t=document.getElementById(location.hash.slice(1));if(t)setTimeout(function(){t.scrollIntoView()},50)}}
+document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a[href^="#r"]'):null;if(a&&/^#r\d+$/.test(a.getAttribute('href')))rf.open=true});
+window.addEventListener('hashchange',openRef);openRef();
+
+// verdict checklist
+var items=[].slice.call(document.querySelectorAll('#cond li'));
+function drawVerdict(){
+  var n=items.filter(function(i){return i.classList.contains('on')}).length,r=$('vres');
+  if(n===0){r.className='vres';r.textContent='No condition ticked yet.';}
+  else if(n===items.length){r.className='vres ok';r.textContent='All six conditions hold: proceed, starting with a pilot in two or three regions.';}
+  else{r.className='vres no';r.textContent=n+' of '+items.length+' conditions hold. Not yet: if the rest cannot be guaranteed, the money is better spent on housing, salaries and transport for rural medical workers.';}
+}
+items.forEach(function(li){
+  li.setAttribute('tabindex','0');li.setAttribute('role','checkbox');li.setAttribute('aria-checked','false');
+  function t(){li.classList.toggle('on');li.setAttribute('aria-checked',li.classList.contains('on')?'true':'false');drawVerdict()}
+  li.addEventListener('click',t);li.addEventListener('keydown',function(e){if(e.key===' '||e.key==='Enter'){e.preventDefault();t()}});
+});
+drawVerdict();
+})();
+</script>
+</body>
+</html>
